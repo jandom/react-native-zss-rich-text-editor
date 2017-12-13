@@ -296,6 +296,7 @@ class RichTextToolbar extends Component {
         }
         break;
       case actions.hashTag:
+        this.state.editor.updateImage('https://img.eservice-hk.net/upload/2017/09/11/221438_adc189f7faadbeaf8f3f88dc8024fc05.jpg', 0);
         break;
     }
   }

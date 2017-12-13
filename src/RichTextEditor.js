@@ -293,20 +293,6 @@ export default class RichTextEditor extends Component {
     return PlatformIOS ? buttonText : buttonText.toUpperCase();
   }
 
-  // to test htmlview
-  // render() {
-  //   const htmlContent = `<p style="color:red; font-size: 20px">dllm<b>dllm abcadsfasef fase </b></p><p>dllm abcadsfasef fase asdfcasvfasfevasefvasefvasefvasefvasefvasefva</p>`;
-
-  //   return (
-  //     <ScrollView style={styles.container}>
-  //       <HTMLView
-  //         value={htmlContent}
-  //         stylesheet={styles}
-  //       />
-  //     </ScrollView>
-  //   );
-  // }
-
   render() {
     //in release build, external html files in Android can't be required, so they must be placed in the assets folder and accessed via uri
     const pageSource = PlatformIOS ? require('./editor.html') : { uri: 'file:///android_asset/editor.html' };
@@ -485,6 +471,15 @@ export default class RichTextEditor extends Component {
   insertImage(attributes, closeImageData) {
     this._sendAction(actions.insertImage, {attributes, closeImageData});
     this.prepareInsert(); //This must be called BEFORE insertImage. But WebViewBridge uses a stack :/
+  }
+
+  updateImage(url, index) {
+    this._sendAction(actions.updateImage, {url, index});
+  }
+
+  removeDimFilter(index) {
+    console.log('removeDimFilter')
+    this._sendAction(actions.removeDimFilter, index);
   }
 
   setSubscript() {
@@ -779,18 +774,4 @@ const styles = StyleSheet.create({
     marginRight: -20,
     marginTop: 20
   },
-  // a: {
-  //   fontWeight: '300',
-  //   color: '#FF3366', // make links coloured pink
-  // },
-  // img: {
-  //   width: Dimensions.get('window').width,
-  //   height: 300,
-  // }, 
-  // container: {
-  //   flex: 1
-  // },
-  // p : {
-  //   fontSize: 24
-  // }
 });
