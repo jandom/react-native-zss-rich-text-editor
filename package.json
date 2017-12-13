@@ -1,5 +1,5 @@
 {
-  "_from": "git+https://github.com/hk01-digital/react-native-zss-rich-text-editor.git#master",
+  "_from": "git+https://github.com/jandom/react-native-zss-rich-text-editor.git#master",
   "_id": "react-native-zss-rich-text-editor@1.0.2",
   "_inBundle": false,
   "_integrity": "sha1-XWNOKp5YfRh3pc6MaamXLTTvFHM=",
@@ -7,19 +7,19 @@
   "_phantomChildren": {},
   "_requested": {
     "type": "git",
-    "raw": "react-native-zss-rich-text-editor@git+https://github.com/hk01-digital/react-native-zss-rich-text-editor.git#master",
+    "raw": "react-native-zss-rich-text-editor@git+https://github.com/jandom/react-native-zss-rich-text-editor.git#master",
     "name": "react-native-zss-rich-text-editor",
     "escapedName": "react-native-zss-rich-text-editor",
-    "rawSpec": "git+https://github.com/hk01-digital/react-native-zss-rich-text-editor.git#master",
-    "saveSpec": "git+https://github.com/hk01-digital/react-native-zss-rich-text-editor.git#master",
-    "fetchSpec": "https://github.com/hk01-digital/react-native-zss-rich-text-editor.git",
+    "rawSpec": "git+https://github.com/jandom/react-native-zss-rich-text-editor.git#master",
+    "saveSpec": "git+https://github.com/jandom/react-native-zss-rich-text-editor.git#master",
+    "fetchSpec": "https://github.com/jandom/react-native-zss-rich-text-editor.git",
     "gitCommittish": "master"
   },
   "_requiredBy": [
     "/"
   ],
-  "_resolved": "git+https://github.com/hk01-digital/react-native-zss-rich-text-editor.git#668265c8962638f10053657a9a0e1516045cd751",
-  "_spec": "react-native-zss-rich-text-editor@git+https://github.com/hk01-digital/react-native-zss-rich-text-editor.git#master",
+  "_resolved": "git+https://github.com/jandom/react-native-zss-rich-text-editor.git#668265c8962638f10053657a9a0e1516045cd751",
+  "_spec": "react-native-zss-rich-text-editor@git+https://github.com/jandom/react-native-zss-rich-text-editor.git#master",
   "_where": "/Users/user/Desktop/Git/ugc-mobile-app",
   "bugs": {
     "url": "https://github.com/wix/react-native-zss-rich-text-editor/issues"
