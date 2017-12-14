@@ -115,8 +115,8 @@ class RichTextToolbar extends Component {
 
     if (imgUrl && mediaId && imgLocalId) {
       const editor = this.props.getEditor();
-      
-      // added delay to prevent updateImageWithUrl before inserted photo into editor 
+
+      // added delay to prevent updateImageWithUrl before inserted photo into editor
       setTimeout(() => {
         editor.updateImageWithUrl(imgUrl, mediaId, imgLocalId)
 
@@ -125,7 +125,7 @@ class RichTextToolbar extends Component {
       }, 1000)
     }
   }
-  
+
   getRows(actions, selectedItems) {
     return actions.map((action) => {return {action, selected: selectedItems.includes(action)};});
   }
@@ -229,7 +229,7 @@ class RichTextToolbar extends Component {
 
     editor.insertImage(image, closeImageData, true)
   }
-  
+
   onPressAddImage = () => {
     const editor = this.props.getEditor();
     ImagePicker.openPicker({
@@ -430,24 +430,24 @@ const closeImageData =
 
 const styles = StyleSheet.create({
   container: {
-    height: 50, 
-    backgroundColor: 'white', 
-  },  
+    height: 50,
+    backgroundColor: 'white',
+  },
   toolbarRow: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
-  }, 
+  },
   toolbarBtnContainer: {
     flexDirection: 'row',
-  }, 
+  },
   toolbarUpperline: {
     height: 1,
     backgroundColor: 'rgb(230, 233, 235)'
   },
   toolbarBtn: {
-    height: 50, 
-    width: 50, 
+    height: 50,
+    width: 50,
     justifyContent: 'space-between',
     alignItems: 'center',
   },
@@ -480,11 +480,11 @@ const mapDispatchToProps = dispatch => {
 
 const mapStateToProps = (state, props) => {
   return {
-    fetching: state.textEditor.get('fetching'),
-    imgUrl: state.textEditor.get('imgUrl'),
-    mediaId: state.textEditor.get('mediaId'),
-    imgLocalId: state.textEditor.get('imgLocalId'),
-    errorMessage: state.textEditor.get('errorMessage'),
+    fetching: state.textEditor && state.textEditor.get('fetching'),
+    imgUrl: state.textEditor && state.textEditor.get('imgUrl'),
+    mediaId: state.textEditor && state.textEditor.get('mediaId'),
+    imgLocalId: state.textEditor && state.textEditor.get('imgLocalId'),
+    errorMessage: state.textEditor && state.textEditor.get('errorMessage'),
   }
 }
 
