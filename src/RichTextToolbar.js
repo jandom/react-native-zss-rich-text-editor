@@ -45,14 +45,13 @@ type Props = {
   hasError: boolean,
   errorMessage: string,
   uploadImage: Function,
+  imgLocalId: string,
 }
 
 type State = {
 }
 
 class RichTextToolbar extends Component {
-  imageCounter: number
-  imageGroupCounter: number
 
   static propTypes = {
     getEditor: PropTypes.func.isRequired,
@@ -90,10 +89,6 @@ class RichTextToolbar extends Component {
     });
   }
 
-  getRows(actions, selectedItems) {
-    return actions.map((action) => {return {action, selected: selectedItems.includes(action)};});
-  }
-
   componentDidMount() {
     const editor = this.props.getEditor();
     if (!editor) {
@@ -102,6 +97,20 @@ class RichTextToolbar extends Component {
       editor.registerToolbar((selectedItems) => this.setSelectedItems(selectedItems));
       this.setState({editor});
     }
+  }
+
+  componentDidUpdate() {
+    const imgUrl = this.props.imgUrl
+    const imgLocalId = this.props.imgLocalId
+
+    if (imgUrl && imgLocalId) {
+      const editor = this.props.getEditor();
+      editor.updateImageWithUrl(imgUrl, imgLocalId)
+    }
+  }
+  
+  getRows(actions, selectedItems) {
+    return actions.map((action) => {return {action, selected: selectedItems.includes(action)};});
   }
 
   setSelectedItems(selectedItems) {
@@ -206,7 +215,12 @@ class RichTextToolbar extends Component {
 
       let isMultiple = images.length > 1
 
+      let groupId = this.randomIdentifier()
+
       images.reverse().map(image => {
+        image.localId = this.randomIdentifier()
+        image.groupId = groupId
+
         image.src = 'data:image/png;base64,' + image.data
         image.data = undefined
 
@@ -224,8 +238,6 @@ class RichTextToolbar extends Component {
           image.width = width
           image.height = width / ratio
         }
-        image.index = this.imageCounter
-        image.groupId = this.imageGroupCounter
   
         // all prop of image here will be passed as prop of <img> in webview
         editor.insertImage(image, closeImageData)
@@ -233,6 +245,11 @@ class RichTextToolbar extends Component {
       })
       this.imageGroupCounter++
     })
+  }
+
+  randomIdentifier = () => {
+    const currentDate = new Date().getTime()
+    return currentDate.toString() + Math.random().toString(36).substring(7);
   }
 
   render() {
@@ -296,7 +313,7 @@ class RichTextToolbar extends Component {
         }
         break;
       case actions.hashTag:
-        this.state.editor.updateImage('https://img.eservice-hk.net/upload/2017/09/11/221438_adc189f7faadbeaf8f3f88dc8024fc05.jpg', 0);
+        this.state.editor.updateImageWithUrl('https://img.eservice-hk.net/upload/2017/09/11/221438_adc189f7faadbeaf8f3f88dc8024fc05.jpg', 0);
         break;
     }
   }
@@ -337,6 +354,9 @@ const mapStateToProps = (state, props) => {
   return {
     fetching: state.textEditor.get('fetching'),
     imgId: state.textEditor.get('imgId'),
+    imgOriginalSize: state.textEditor.get('imgOriginalSize'),
+    imgUrl: state.textEditor.get('imgUrl'),
+    imgLocalId: state.textEditor.get('imgLocalId'),
   }
 }
 

@@ -30,7 +30,7 @@ const create = (baseURL = "https://postman-echo.com"): ApiClient => {
     api.setHeader('Accept', `application/json`)
 
     const data = new FormData()
-    data.append('picture', {uri: image.path, 'name': 'jj.jpg', type: 'image/jpg'})
+    data.append('picture', {uri: image.path, name: 'jj.jpg', type: 'image/jpg'})
     data.append('id', image.localIdentifier)
     data.append('size', image.width + 'x' + image.height)
     data.append('format', image.mime)

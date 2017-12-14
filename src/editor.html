@@ -1368,15 +1368,15 @@
 				var attributes = data['attributes']
 				var closeImageData = data['closeImageData']
 				
-				var index = attributes['index'];
+				var localId = attributes['localId'];
 				var groupId = attributes['groupId'];
 				var imageGroupContainerId = 'imageGroupContainer' + groupId;
 				// element id for p after the image group container
 				var pAfterImageGroupContainerId = 'pAfterImageGroupContainer' + groupId;
-				var imageLoadingId = 'imageLoading' + index;
-				var imageContainerId = 'imageContainer' + index;
-				var closeButtonId = 'closeButton' + index
-				var insertedImageId = 'insertedImage' + index
+				var imageLoadingId = 'imageLoading' + localId;
+				var imageContainerId = 'imageContainer' + localId;
+				var closeButtonId = 'closeButton' + localId
+				var insertedImageId = 'insertedImage' + localId
 				var width = attributes['width'];
 				var height = attributes['height'];
 
@@ -1390,7 +1390,8 @@
 				$('#'+imageGroupContainerId).attr('contenteditable', 'false');
 
 				var imageContainer = $('<div>'+
-					'<div class="imageContainer" id="'+imageContainerId+'"><div class="imageLoading" id="'+imageLoadingId+'"></div>'+
+					'<div class="imageContainer" id="'+imageContainerId+'">'+
+					'<div class="imageLoading" id="'+imageLoadingId+'"></div>'+
 					'<input id="'+closeButtonId+'" class="closeButton" type="image" src="'+closeImageData+'" data="'+imageContainerId+'">'+
 					'<img class="insertedImage" id="'+insertedImageId+'"></div></div>');
 
@@ -1421,15 +1422,15 @@
 				zss_editor.enabledEditingItems();
 			}
 
-			zss_editor.updateImage = function(data) {
+			zss_editor.updateImageWithUrl = function(data) {
 				zss_editor.restorerange(); 
 				var url = data['url'];
-				var index = data['index'];
-				var insertedImageId = 'insertedImage' + index
-				console.log("url :", url)
-				console.log("index :", index)
+				var localId = data['localId'];
+				var insertedImageId = 'insertedImage' + localId;
 
 				$('#'+insertedImageId).attr('src', url);
+
+				zss_editor.removeDimFilter(localId)
 			}
 
 			zss_editor.insertImageBase64String = function(imageBase64String, alt) {
@@ -1481,9 +1482,8 @@
 				zss_editor.enabledEditingItems();
 			}
 
-			zss_editor.removeDimFilter = function(index) {
-				console.log("zss_editor.removeDimFilter :", index)
-				$("#imageLoading"+index).remove();
+			zss_editor.removeDimFilter = function(localId) {
+				$("#imageLoading"+localId).remove();
 			}
 
 			function getHtml(editorId) {
