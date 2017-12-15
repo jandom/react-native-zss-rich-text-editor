@@ -1368,14 +1368,15 @@
 				var attributes = data['attributes']
 				var closeImageData = data['closeImageData']
 				
-				var index = attributes['index'];
+				var localId = attributes['localId'];
 				var groupId = attributes['groupId'];
 				var imageGroupContainerId = 'imageGroupContainer' + groupId;
 				// element id for p after the image group container
 				var pAfterImageGroupContainerId = 'pAfterImageGroupContainer' + groupId;
-				var imageContainerId = 'imageContainer' + index;
-				var closeButtonId = 'closeButton' + index
-				var insertedImageId = 'insertedImage' + index
+				var imageLoadingId = 'imageLoading' + localId;
+				var imageContainerId = 'imageContainer' + localId;
+				var closeButtonId = 'closeButton' + localId
+				var insertedImageId = 'insertedImage' + localId
 				var width = attributes['width'];
 				var height = attributes['height'];
 
@@ -1383,12 +1384,14 @@
 				if ($('#'+imageGroupContainerId).length == 0) {
 					var imageGroupContainer = $('<div><div class="imageGroupContainer" id="'+imageGroupContainerId+'"></div></div>');
 					zss_editor.insertHTML(imageGroupContainer.html());
-
-					// prevent user input within the image group
-					$('#'+imageGroupContainerId).attr('contenteditable', 'false');
 				}
 
-				var imageContainer = $('<div><div class="imageContainer" id="'+imageContainerId+'">'+
+				// prevent user input within the image group
+				$('#'+imageGroupContainerId).attr('contenteditable', 'false');
+
+				var imageContainer = $('<div>'+
+					'<div class="imageContainer" id="'+imageContainerId+'">'+
+					'<div class="imageLoading" id="'+imageLoadingId+'"></div>'+
 					'<input id="'+closeButtonId+'" class="closeButton" type="image" src="'+closeImageData+'" data="'+imageContainerId+'">'+
 					'<img class="insertedImage" id="'+insertedImageId+'"></div></div>');
 
@@ -1417,6 +1420,17 @@
 				// move cursor to p
 				zss_editor.focusEditor(pAfterImageGroupContainerId)
 				zss_editor.enabledEditingItems();
+			}
+
+			zss_editor.updateImageWithUrl = function(data) {
+				zss_editor.restorerange(); 
+				var url = data['url'];
+				var localId = data['localId'];
+				var insertedImageId = 'insertedImage' + localId;
+
+				$('#'+insertedImageId).attr('src', url);
+
+				zss_editor.removeDimFilter(localId)
 			}
 
 			zss_editor.insertImageBase64String = function(imageBase64String, alt) {
@@ -1466,6 +1480,10 @@
 			zss_editor.insertHTML = function(html) {
 				document.execCommand('insertHTML', false, html);
 				zss_editor.enabledEditingItems();
+			}
+
+			zss_editor.removeDimFilter = function(localId) {
+				$("#imageLoading"+localId).remove();
 			}
 
 			function getHtml(editorId) {
@@ -1746,6 +1764,15 @@
 
 			.imageContainer {
 				position: relative;
+			}
+
+			.imageLoading {
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				background-color: black;
+				opacity: 0.5;
+				z-index: 1;
 			}
 
 			.insertedImage {

@@ -34,6 +34,8 @@ export const actions = {
   insertLink: 'INST_LINK',
   updateLink: 'UPDATE_LINK',
   insertImage: 'INST_IMAGE',
+  updateImageWithUrl: 'UPDATE_IMAGE_WITH_URL',
+  removeDimFilter: 'REMOVE_DIM_FILTER',
   takePicture: 'TAKE_PICTURE',
   hashTag: 'HASH_TAG',
   setSubscript: 'subscript',

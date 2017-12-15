@@ -4,8 +4,8 @@ import { Map } from 'immutable'
 /* ------------- Types and Action Creators ------------- */
 
 const { Types, Creators } = createActions({
-  textEditorRequest: ['image'],
-  textEditorSuccess: ['imgId', 'imgOriginalSize', 'imgUrl'],
+  textEditorRequest: ['images'],
+  textEditorSuccess: ['imgUrl', 'imgLocalId'],
   textEditorFailure: ['errorMessage'],
 })
 
@@ -19,27 +19,30 @@ export const INITIAL_STATE = Map({
   fetching: false,
   hasError: null,
   errorMessage: '',
-  imgId: "fake imgId",
 })
 
 /* ------------- Reducers ------------- */
 
-export const request = (state, { image }) => 
+export const request = (state, { images }) => 
   state
     .merge({
       fetching: true,
     })
+  
 
 export const success = (
   state,
-  { imgId, imgOriginalSize, imgUrl }
-) =>
-  state
+  { imgUrl, imgLocalId }
+) => {
+  return state
     .merge({
       fetching: false,
       hasError: false,
       errorMessage: '',
+      imgUrl,
+      imgLocalId,
     })
+  }
 
 export const failure = (state, errorMessage ) =>
   state

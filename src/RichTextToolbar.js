@@ -45,14 +45,13 @@ type Props = {
   hasError: boolean,
   errorMessage: string,
   uploadImage: Function,
+  imgLocalId: string,
 }
 
 type State = {
 }
 
 class RichTextToolbar extends Component {
-  imageCounter: number
-  imageGroupCounter: number
 
   static propTypes = {
     getEditor: PropTypes.func.isRequired,
@@ -72,8 +71,6 @@ class RichTextToolbar extends Component {
   constructor(props) {
     super(props);
     const actions = this.props.actions ? this.props.actions : defaultActions;
-    this.imageCounter = 0
-    this.imageGroupCounter = 0
     this.state = {
       editor: undefined,
       selectedItems: [],
@@ -90,10 +87,6 @@ class RichTextToolbar extends Component {
     });
   }
 
-  getRows(actions, selectedItems) {
-    return actions.map((action) => {return {action, selected: selectedItems.includes(action)};});
-  }
-
   componentDidMount() {
     const editor = this.props.getEditor();
     if (!editor) {
@@ -102,6 +95,20 @@ class RichTextToolbar extends Component {
       editor.registerToolbar((selectedItems) => this.setSelectedItems(selectedItems));
       this.setState({editor});
     }
+  }
+
+  componentDidUpdate() {
+    const imgUrl = this.props.imgUrl
+    const imgLocalId = this.props.imgLocalId
+
+    if (imgUrl && imgLocalId) {
+      const editor = this.props.getEditor();
+      editor.updateImageWithUrl(imgUrl, imgLocalId)
+    }
+  }
+  
+  getRows(actions, selectedItems) {
+    return actions.map((action) => {return {action, selected: selectedItems.includes(action)};});
   }
 
   setSelectedItems(selectedItems) {
@@ -206,11 +213,16 @@ class RichTextToolbar extends Component {
 
       let isMultiple = images.length > 1
 
+      let groupId = this.randomIdentifier()
+
       images.reverse().map(image => {
+        image.localId = this.randomIdentifier()
+        image.groupId = groupId
+
         image.src = 'data:image/png;base64,' + image.data
         image.data = undefined
 
-        this.props.uploadImage(image);
+        this.props.uploadImage([image]);
         
         // calculate correct image size for display
         let ratio = image.width / image.height
@@ -224,15 +236,16 @@ class RichTextToolbar extends Component {
           image.width = width
           image.height = width / ratio
         }
-        image.index = this.imageCounter
-        image.groupId = this.imageGroupCounter
   
         // all prop of image here will be passed as prop of <img> in webview
         editor.insertImage(image, closeImageData)
-        this.imageCounter++
       })
-      this.imageGroupCounter++
     })
+  }
+
+  randomIdentifier = () => {
+    const currentDate = new Date().getTime()
+    return currentDate.toString() + Math.random().toString(36).substring(7);
   }
 
   render() {
@@ -327,15 +340,17 @@ const styles = StyleSheet.create({
 
 const mapDispatchToProps = dispatch => {
   return {
-    uploadImage: (image = null) =>
-      dispatch(TextEditorRedux.textEditorRequest(image)),
+    uploadImage: (images = null) =>
+      dispatch(TextEditorRedux.textEditorRequest(images)),
   }
 }
 
 const mapStateToProps = (state, props) => {
   return {
     fetching: state.textEditor.get('fetching'),
-    imgId: state.textEditor.get('imgId'),
+    imgUrl: state.textEditor.get('imgUrl'),
+    imgLocalId: state.textEditor.get('imgLocalId'),
+    errorMessage: state.textEditor.get('errorMessage'),
   }
 }
 
