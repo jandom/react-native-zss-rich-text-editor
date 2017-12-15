@@ -478,7 +478,6 @@ export default class RichTextEditor extends Component {
   }
 
   removeDimFilter(index) {
-    console.log('removeDimFilter')
     this._sendAction(actions.removeDimFilter, index);
   }
 
