@@ -350,6 +350,7 @@ const mapStateToProps = (state, props) => {
     fetching: state.textEditor.get('fetching'),
     imgUrl: state.textEditor.get('imgUrl'),
     imgLocalId: state.textEditor.get('imgLocalId'),
+    errorMessage: state.textEditor.get('errorMessage'),
   }
 }
 
