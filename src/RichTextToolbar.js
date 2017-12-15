@@ -71,8 +71,6 @@ class RichTextToolbar extends Component {
   constructor(props) {
     super(props);
     const actions = this.props.actions ? this.props.actions : defaultActions;
-    this.imageCounter = 0
-    this.imageGroupCounter = 0
     this.state = {
       editor: undefined,
       selectedItems: [],
@@ -224,7 +222,7 @@ class RichTextToolbar extends Component {
         image.src = 'data:image/png;base64,' + image.data
         image.data = undefined
 
-        this.props.uploadImage(image);
+        this.props.uploadImage([image]);
         
         // calculate correct image size for display
         let ratio = image.width / image.height
@@ -241,9 +239,7 @@ class RichTextToolbar extends Component {
   
         // all prop of image here will be passed as prop of <img> in webview
         editor.insertImage(image, closeImageData)
-        this.imageCounter++
       })
-      this.imageGroupCounter++
     })
   }
 
@@ -313,7 +309,6 @@ class RichTextToolbar extends Component {
         }
         break;
       case actions.hashTag:
-        this.state.editor.updateImageWithUrl('https://img.eservice-hk.net/upload/2017/09/11/221438_adc189f7faadbeaf8f3f88dc8024fc05.jpg', 0);
         break;
     }
   }
@@ -345,16 +340,14 @@ const styles = StyleSheet.create({
 
 const mapDispatchToProps = dispatch => {
   return {
-    uploadImage: (image = null) =>
-      dispatch(TextEditorRedux.textEditorRequest(image)),
+    uploadImage: (images = null) =>
+      dispatch(TextEditorRedux.textEditorRequest(images)),
   }
 }
 
 const mapStateToProps = (state, props) => {
   return {
     fetching: state.textEditor.get('fetching'),
-    imgId: state.textEditor.get('imgId'),
-    imgOriginalSize: state.textEditor.get('imgOriginalSize'),
     imgUrl: state.textEditor.get('imgUrl'),
     imgLocalId: state.textEditor.get('imgLocalId'),
   }

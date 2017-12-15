@@ -1,5 +1,5 @@
 
 export default {
-    uploadImage: 'post',
+    uploadImage: 'media/images',
   }
   
