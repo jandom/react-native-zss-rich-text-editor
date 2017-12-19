@@ -222,6 +222,14 @@ class RichTextToolbar extends Component {
         image.src = 'data:image/png;base64,' + image.data
         image.data = undefined
 
+        // Handling for android
+        if (image.filename === undefined) {
+          image.filename = image.path.substring(image.path.lastIndexOf('/')+1, image.path.length)
+        }
+        if (image.sourceURL === undefined) {
+          image.sourceURL = image.path
+        }
+
         this.props.uploadImage([image]);
         
         // calculate correct image size for display
