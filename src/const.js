@@ -37,6 +37,7 @@ export const actions = {
   updateImageWithUrl: 'UPDATE_IMAGE_WITH_URL',
   removeDimFilter: 'REMOVE_DIM_FILTER',
   takePicture: 'TAKE_PICTURE',
+  takeVideo: 'TAKE_VIDEO',
   hashTag: 'HASH_TAG',
   setSubscript: 'subscript',
   setSuperscript: 'superscript',

@@ -22,15 +22,15 @@ const leftActions = [
 ];
 
 const rightActions = [
-  actions.takePicture,
+  actions.takeVideo,
   actions.insertImage,
 ];
 
 function getDefaultIcon() {
   const texts = {};
-  texts[actions.hashTag] = require('../img/icon_format_bold.png');
-  texts[actions.takePicture] = require('../img/icon_format_italic.png');
-  texts[actions.insertImage] = require('../img/icon_format_media.png');
+  texts[actions.hashTag] = require('../img/icoTag.png');
+  texts[actions.takeVideo] = require('../img/icoYoutubeUrl.png');
+  texts[actions.insertImage] = require('../img/icoCamera.png');
   texts[actions.setBold] = require('../img/icon_format_bold.png');
   texts[actions.setItalic] = require('../img/icon_format_italic.png');
   texts[actions.insertBulletsList] = require('../img/icon_format_ul.png');
@@ -46,6 +46,7 @@ type Props = {
   errorMessage: string,
   uploadImage: Function,
   imgLocalId: string,
+  hasTags: boolean,
 }
 
 type State = {
@@ -58,7 +59,8 @@ class RichTextToolbar extends Component {
     actions: PropTypes.array,
     onPressAddLink: PropTypes.func,
     onPressAddImage: PropTypes.func,
-    onCameraBtnPressed: PropTypes.func,
+    onVideoBtnPressed: PropTypes.func,
+    onHashTagBtnPressed: PropTypes.func,
     selectedButtonStyle: PropTypes.object,
     iconTint: PropTypes.any,
     selectedIconTint: PropTypes.any,
@@ -140,6 +142,9 @@ class RichTextToolbar extends Component {
 
   _defaultRenderAction(action, selected) {
     const icon = this._getButtonIcon(action);
+    let view = null
+    const shouldShowUnderline = action === actions.hashTag && this.props.hasTags
+    const style = shouldShowUnderline? [styles.toolbarBtnUnderline, styles.toolbarBtnUnderlineColor] : styles.toolbarBtnUnderline
     return (
       <TouchableOpacity
           key={action}
@@ -149,7 +154,10 @@ class RichTextToolbar extends Component {
           ]}
           onPress={() => this._onPress(action)}
       >
-        {icon ? <Image source={icon} style={{tintColor: selected ? this.props.selectedIconTint : this.props.iconTint}}/> : null}
+        <View style={styles.btnImageContainer}>
+          {icon ? <Image source={icon} style={{tintColor: selected ? this.props.selectedIconTint : this.props.iconTint}}/> : null}
+        </View>
+        <View style={style}></View>
       </TouchableOpacity>
     );
   }
@@ -261,9 +269,12 @@ class RichTextToolbar extends Component {
       <View
           style={[styles.container, this.props.style]}
       >
-        <View style={styles.toolbarRow}>
-          {this._renderActionBtnContainer(leftActions)}
-          {this._renderActionBtnContainer(rightActions)}
+        <View>
+          <View style={styles.toolbarUpperline}/>
+          <View style={styles.toolbarRow}>
+            {this._renderActionBtnContainer(leftActions)}
+            {this._renderActionBtnContainer(rightActions)}
+          </View>
         </View>
       </View>
     );
@@ -310,13 +321,14 @@ class RichTextToolbar extends Component {
         this.state.editor.prepareInsert();
         this.onPressAddImage();
         break;
-      case actions.takePicture:
+      case actions.takeVideo:
         this.state.editor.prepareInsert();
-        if(this.props.onCameraBtnPressed) {
-          this.props.onCameraBtnPressed();
+        if(this.props.onVideoBtnPressed) {
+          this.props.onVideoBtnPressed();
         }
         break;
       case actions.hashTag:
+      this.props.onHashTagBtnPressed && this.props.onHashTagBtnPressed()
         break;
     }
   }
@@ -325,20 +337,37 @@ class RichTextToolbar extends Component {
 const styles = StyleSheet.create({
   container: {
     height: 50, 
-    backgroundColor: 'rgb(238,238,238)', 
+    backgroundColor: 'white', 
   },  
   toolbarRow: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   }, 
   toolbarBtnContainer: {
     flexDirection: 'row',
   }, 
+  toolbarUpperline: {
+    height: 1,
+    backgroundColor: 'rgb(230, 233, 235)'
+  },
   toolbarBtn: {
     height: 50, 
     width: 50, 
-    justifyContent: 'center'
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  btnImageContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 6,
+  },
+  toolbarBtnUnderline: {
+    height: 5,
+    width: 50,
+  },
+  toolbarBtnUnderlineColor: {
+    backgroundColor: 'rgb(0, 165, 225)'
   },
   defaultSelectedButton: {
     backgroundColor: 'red'
