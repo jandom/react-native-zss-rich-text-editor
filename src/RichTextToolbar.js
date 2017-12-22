@@ -237,6 +237,10 @@ class RichTextToolbar extends Component {
         if (image.sourceURL === undefined) {
           image.sourceURL = image.path
         }
+        // temp fix, since this is required by api at the moment, although it seems it is not used anywhere
+        if (image.localidentifier === undefined) {
+          image.localidentifier = image.localId
+        }
 
         this.props.uploadImage([image]);
         
