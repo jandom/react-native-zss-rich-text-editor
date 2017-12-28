@@ -37,5 +37,6 @@ export function * uploadImage (api, { images }) {
     }
   } catch(e) {
     // TODO: handle error
+    console.log('uploadImage error :', e)
   }
 }
