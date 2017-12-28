@@ -24,7 +24,6 @@ const create = (baseURL = Config.UGC_API_BASE_URL): ApiClient => {
   }
 
   const uploadImage = function * (images) {
-    console.log('images :', images)
     const userJwt = yield select(userJwtSelector)
     api.setHeader('Authorization', `Bearer ${userJwt}`)
     api.setHeader('Content-Type', `multipart/form-data`)
