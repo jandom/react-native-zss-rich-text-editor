@@ -33,7 +33,7 @@ const create = (baseURL = Config.UGC_API_BASE_URL): ApiClient => {
 
     images.map(image => {
       data.append('images[]', {
-        uri: image.sourceURL, 
+        uri: image.path, 
         name: image.filename, 
         type: image.mime
       })
