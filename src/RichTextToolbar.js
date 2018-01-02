@@ -334,6 +334,7 @@ class RichTextToolbar extends Component {
   }
 
   render() {
+    const { actions } = this.state
     return (
       <View
           style={[styles.container, this.props.style]}
@@ -341,8 +342,9 @@ class RichTextToolbar extends Component {
         <View>
           <View style={styles.toolbarUpperline}/>
           <View style={styles.toolbarRow}>
-            {this._renderActionBtnContainer(leftActions)}
-            {this._renderActionBtnContainer(this.props.isGridView? rightActions : rightActionsWithVideo)}
+            {/* {this._renderActionBtnContainer(leftActions)} */}
+            {/* {this._renderActionBtnContainer(this.props.isGridView? rightActions : rightActionsWithVideo)} */}
+            {this._renderActionBtnContainer(actions)}
           </View>
         </View>
       </View>
