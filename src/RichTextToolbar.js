@@ -6,6 +6,7 @@ import ImagePicker from 'react-native-image-crop-picker'
 import TextEditorRedux from '../../../node_modules/react-native-zss-rich-text-editor/Redux/TextEditorRedux'
 import { connect } from 'react-redux'
 import parse5 from 'react-native-parse-html'
+import { imagePerRow } from './RichTextEditor'
 
 const defaultActions = [
   actions.insertImage,
@@ -180,9 +181,10 @@ class RichTextToolbar extends Component {
     )
   }
   
-  onPressAddImage () {
+  onPressAddImage = () => {
     const width = Dimensions.get('window').width
     const editor = this.props.getEditor();
+    const { isGridView } = this.props
     ImagePicker.openPicker({
       multiple: true,
       includeBase64: true,
@@ -219,13 +221,12 @@ class RichTextToolbar extends Component {
       'gUEgtTIIrCUD0k9gEEitDAJryYD0ExgEUiuDwFoyIP0EBoHUyiCwlgxIP4FBILUy/gJqyGPlqK1K' +
       'ugAAAABJRU5ErkJggg=='
 
-      let isMultiple = images.length > 1
-
       let groupId = this.randomIdentifier()
 
       images.reverse().map(image => {
         image.localId = this.randomIdentifier()
-        image.groupId = groupId
+        // GridView only need 1 image group container
+        image.groupId = isGridView? 0 : groupId
 
         image.src = 'data:image/png;base64,' + image.data
         image.data = undefined
@@ -249,8 +250,8 @@ class RichTextToolbar extends Component {
         image.originalWidth = image.width
         image.originalHeight = image.height
 
-        if (isMultiple && this.props.isGridView) {
-          image.width = width / 3
+        if (this.props.isGridView) {
+          image.width = ( width - (5 * (imagePerRow + 1)) ) / imagePerRow
           image.height = image.width
         } else {
           image.width = width
@@ -258,7 +259,11 @@ class RichTextToolbar extends Component {
         }
   
         // all prop of image here will be passed as prop of <img> in webview
-        editor.insertImage(image, closeImageData)
+        if (this.props.isGridView) {
+          editor.insertImageIntoGrid(image, closeImageData)
+        } else {
+          editor.insertImage(image, closeImageData)
+        }
       })
     })
   }
@@ -395,6 +400,8 @@ const mapStateToProps = (state, props) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(
+export default connect(mapStateToProps, mapDispatchToProps, null, {
+  withRef: true
+})(
   RichTextToolbar
 )

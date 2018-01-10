@@ -918,6 +918,15 @@
 
 					zss_editor.isDragging = false;
 				});
+				$(window).on('touchend', function(e) {
+					var nodeName = e.target.nodeName.toLowerCase();
+					if (nodeName === "input") {
+						var id = e.target.id;
+						if (id == addImageButtonId) {
+							WebViewBridge.send(JSON.stringify({type: 'ADD_IMAGE_BUTTON_ONPRESS'}))
+						}
+					}
+				});
 				$(window).on('scroll', function(e) {
 					if (zss_editor.platform === 'ios') {
 						zss_editor.updateOffset();
@@ -1363,6 +1372,118 @@
 				zss_editor.backuprange();
 			}
 
+			const addImageData = 
+				'data:image/png;base64,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'
+
+			const addImageButtonId = 'addImageButton'
+
+			zss_editor.createImageGroupContainerIfNeeded = function (imageGroupContainerId) {
+				// create imageGroupContainer if not existed
+				if ($('#'+imageGroupContainerId).length == 0) {
+					var imageGroupContainer = $('<div><div class="imageGroupContainer" id="'+imageGroupContainerId+'">'+
+						'</div></div>');
+					zss_editor.insertHTML(imageGroupContainer.html());
+				}
+			}
+
+			zss_editor.createGridImageGroupContainerIfNeeded = function (data) {
+				const attributes = data['attributes']
+				const imageGroupContainerId = attributes['imageGroupContainerId'];
+				const width = attributes['width'];
+				const height = attributes['height'];
+
+				// create imageGroupContainer if not existed
+				if ($('#'+imageGroupContainerId).length == 0) {
+					console.log('create  imageGroupContainerId')	
+					var imageGroupContainer = $('<div><div class="imageGroupContainer" id="'+imageGroupContainerId+'">'+
+						'<input width='+width+' height='+height+' id="'+addImageButtonId+'" class="gridImageContainer" type="image" src="'+addImageData+'">'+
+						'</div></div>');
+					zss_editor.insertHTML(imageGroupContainer.html());
+				}
+			}
+
+			zss_editor.insertImageIntoGrid = function(data) {
+				zss_editor.restorerange(); 
+				var attributes = data['attributes']
+				var closeImageData = data['closeImageData']
+				
+				var localId = attributes['localId'];
+				var groupId = attributes['groupId'];
+				var imageGroupContainerId = 'imageGroupContainer' + groupId;
+				// element id for p after the image group container
+				var pAfterImageGroupContainerId = 'pAfterImageGroupContainer' + groupId;
+				var imageLoadingId = 'imageLoading' + localId;
+				var imageContainerId = 'imageContainer' + localId;
+				var closeButtonId = 'closeButton' + localId
+				var insertedImageId = 'insertedImage' + localId
+				var width = attributes['width'];
+				var height = attributes['height'];
+
+				zss_editor.createGridImageGroupContainerIfNeeded(data)
+
+				// prevent user input within the image group
+				$('#'+imageGroupContainerId).attr('contenteditable', 'false');
+
+				var imageContainer = $('<div>'+
+					'<div class="gridImageContainer" id="'+imageContainerId+'">'+
+					'<div class="imageLoading" id="'+imageLoadingId+'"></div>'+
+					'<input id="'+closeButtonId+'" class="closeButton" type="image" src="'+closeImageData+'" data="'+imageContainerId+'">'+
+					'<img class="insertedImage" id="'+insertedImageId+'"></div></div>');
+
+				imageContainer.find("img#"+insertedImageId).attr(attributes);
+
+				// append imageContainer to corresponding group
+				$('#'+addImageButtonId).before(imageContainer.html());
+
+				// remove the whole imageContainer if user remove image using backspace
+				$("#"+imageContainerId).bind("DOMNodeRemoved", function(e) {
+					var id = e.target.id;
+					if (id === insertedImageId) {
+						$("#"+imageContainerId).remove();
+					}
+				});
+				
+				// change imageContainer's size to fit image size
+				$("#"+imageContainerId).width(width)
+				$("#"+imageContainerId).height(height)
+
+				// create p after image group if not exist
+				if ($('#'+pAfterImageGroupContainerId).length == 0) {
+					$('#'+imageGroupContainerId).after('<p id='+pAfterImageGroupContainerId+'><br></p>');
+				}
+
+				// move cursor to p
+				zss_editor.focusEditor(pAfterImageGroupContainerId)
+				zss_editor.enabledEditingItems();
+			}
+
 			zss_editor.insertImage = function(data) {
 				zss_editor.restorerange(); 
 				var attributes = data['attributes']
@@ -1380,11 +1501,7 @@
 				var width = attributes['width'];
 				var height = attributes['height'];
 
-				// create imageGroupContainer if not existed
-				if ($('#'+imageGroupContainerId).length == 0) {
-					var imageGroupContainer = $('<div><div class="imageGroupContainer" id="'+imageGroupContainerId+'"></div></div>');
-					zss_editor.insertHTML(imageGroupContainer.html());
-				}
+				zss_editor.createImageGroupContainerIfNeeded(imageGroupContainerId)
 
 				// prevent user input within the image group
 				$('#'+imageGroupContainerId).attr('contenteditable', 'false');
@@ -1662,7 +1779,6 @@
 			}
 
 			zss_editor.focusEditor = function(editorId) {
-
 				// the following was taken from http://stackoverflow.com/questions/1125292/how-to-move-cursor-to-end-of-contenteditable-entity/3866442#3866442
 				// and ensures we move the cursor to the end of the editor
 				var editor = $('#' + editorId);
@@ -1766,6 +1882,12 @@
 				position: relative;
 			}
 
+			.gridImageContainer {
+				position: relative;
+				margin-left: 5px;
+				margin-bottom: 5px;
+			}
+
 			.imageLoading {
 				position: absolute;
 				width: 100%;
@@ -1776,10 +1898,11 @@
 			}
 
 			.insertedImage {
-				border-color: rgb(27, 168, 250);
+				border-color: rgb(27, 158, 250);
 				border-width: 4px;
 				border-style: solid;
 				box-sizing: border-box;
+				background-size: cover;
 			}
 
 			.closeButton {

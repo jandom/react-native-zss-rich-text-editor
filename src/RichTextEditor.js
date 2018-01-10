@@ -15,6 +15,8 @@ const injectScript = `
 
 const PlatformIOS = Platform.OS === 'ios';
 
+export const imagePerRow = 3
+
 export default class RichTextEditor extends Component {
   static propTypes = {
     initialTitleHTML: PropTypes.string,
@@ -26,7 +28,8 @@ export default class RichTextEditor extends Component {
     hiddenTitle: PropTypes.bool,
     enableOnChange: PropTypes.bool,
     footerHeight: PropTypes.number,
-    contentInset: PropTypes.object
+    contentInset: PropTypes.object,
+    onAddImageButtonPress: PropTypes.func,
   };
 
   static defaultProps = {
@@ -103,6 +106,9 @@ export default class RichTextEditor extends Component {
       const message = JSON.parse(str);
 
       switch (message.type) {
+        case messages.ADD_IMAGE_BUTTON_ONPRESS:
+          this.props.onAddImageButtonPress && this.props.onAddImageButtonPress();
+          break;
         case messages.TITLE_HTML_RESPONSE:
           if (this.titleResolve) {
             this.titleResolve(message.data);
@@ -470,6 +476,11 @@ export default class RichTextEditor extends Component {
 
   insertImage(attributes, closeImageData) {
     this._sendAction(actions.insertImage, {attributes, closeImageData});
+    this.prepareInsert(); //This must be called BEFORE insertImage. But WebViewBridge uses a stack :/
+  }
+
+  insertImageIntoGrid(attributes, closeImageData) {
+    this._sendAction(actions.insertImageIntoGrid, {attributes, closeImageData});
     this.prepareInsert(); //This must be called BEFORE insertImage. But WebViewBridge uses a stack :/
   }
 
