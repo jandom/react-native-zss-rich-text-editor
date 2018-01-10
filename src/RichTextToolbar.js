@@ -226,7 +226,7 @@ class RichTextToolbar extends Component {
       images.reverse().map(image => {
         image.localId = this.randomIdentifier()
         // GridView only need 1 image group container
-        image.groupId = isGridView? 0 : groupId
+        image.groupId = isGridView? '0' : groupId
 
         image.src = 'data:image/png;base64,' + image.data
         image.data = undefined
