@@ -1415,13 +1415,13 @@
 
 			zss_editor.createGridImageGroupContainerIfNeeded = function (data) {
 				const attributes = data['attributes']
-				const imageGroupContainerId = attributes['imageGroupContainerId'];
+				const groupId = attributes['groupId'];
+				const imageGroupContainerId = 'imageGroupContainer' + groupId;
 				const width = attributes['width'];
 				const height = attributes['height'];
 
 				// create imageGroupContainer if not existed
 				if ($('#'+imageGroupContainerId).length == 0) {
-					console.log('create  imageGroupContainerId')	
 					var imageGroupContainer = $('<div><div class="imageGroupContainer" id="'+imageGroupContainerId+'">'+
 						'<input width='+width+' height='+height+' id="'+addImageButtonId+'" class="gridImageContainer" type="image" src="'+addImageData+'">'+
 						'</div></div>');
@@ -1433,7 +1433,6 @@
 				zss_editor.restorerange(); 
 				var attributes = data['attributes']
 				var closeImageData = data['closeImageData']
-				
 				var localId = attributes['localId'];
 				var groupId = attributes['groupId'];
 				var imageGroupContainerId = 'imageGroupContainer' + groupId;
