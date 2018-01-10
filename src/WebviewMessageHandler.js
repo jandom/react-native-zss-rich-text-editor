@@ -91,7 +91,10 @@ export const InjectedMessageHandler = `
         case '${actions.insertImage}':
           zss_editor.insertImage(action.data);
           break;
-        case '${actions.updateImageWithUrl}':
+        case '${actions.insertImageIntoGrid}':
+          zss_editor.insertImageIntoGrid(action.data);
+          break;
+		    case '${actions.updateImageWithUrl}':
           zss_editor.updateImageWithUrl(action.data);
           break;
         case '${actions.removeDimFilter}':

@@ -34,6 +34,7 @@ export const actions = {
   insertLink: 'INST_LINK',
   updateLink: 'UPDATE_LINK',
   insertImage: 'INST_IMAGE',
+  insertImageIntoGrid: 'INST_IMAGE_GRID',
   updateImageWithUrl: 'UPDATE_IMAGE_WITH_URL',
   removeDimFilter: 'REMOVE_DIM_FILTER',
   takePicture: 'TAKE_PICTURE',
@@ -62,6 +63,7 @@ export const actions = {
 
 
 export const messages = {
+  ADD_IMAGE_BUTTON_ONPRESS: 'ADD_IMAGE_BUTTON_ONPRESS',
   TITLE_HTML_RESPONSE: 'TITLE_HTML_RESPONSE',
   TITLE_TEXT_RESPONSE: 'TITLE_TEXT_RESPONSE',
   CONTENT_HTML_RESPONSE: 'CONTENT_HTML_RESPONSE',
