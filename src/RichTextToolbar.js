@@ -180,7 +180,8 @@ class RichTextToolbar extends Component {
   }
 
   getGridWidth () {
-    const screenWidth = Metrics.screenWidth
+    const screenWidth = Dimensions.get('window').width
+    const { imagePerRow, imageGapWidth } = this.props
     const gridWidth =
       (screenWidth - imageGapWidth * (imagePerRow + 1)) / imagePerRow
     return gridWidth
@@ -256,7 +257,7 @@ class RichTextToolbar extends Component {
         image.originalHeight = image.height
 
         if (this.props.isGridView) {
-          image.width = getGridWidth()
+          image.width = this.getGridWidth()
           image.height = image.width
         } else {
           image.width = width
