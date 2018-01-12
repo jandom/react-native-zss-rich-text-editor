@@ -15,8 +15,6 @@ const injectScript = `
 
 const PlatformIOS = Platform.OS === 'ios';
 
-export const imagePerRow = 3
-
 export default class RichTextEditor extends Component {
   static propTypes = {
     initialTitleHTML: PropTypes.string,
