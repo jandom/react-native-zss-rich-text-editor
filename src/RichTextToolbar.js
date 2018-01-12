@@ -6,7 +6,6 @@ import ImagePicker from 'react-native-image-crop-picker'
 import TextEditorRedux from '../../../node_modules/react-native-zss-rich-text-editor/Redux/TextEditorRedux'
 import { connect } from 'react-redux'
 import parse5 from 'react-native-parse-html'
-import { imagePerRow } from './RichTextEditor'
 
 const defaultActions = [
   actions.insertImage,
@@ -48,9 +47,8 @@ type Props = {
   uploadImage: Function,
   imgLocalId: string,
   hasTags: boolean,
-}
-
-type State = {
+  imagePerRow: number,
+  imageGapWidth: number,
 }
 
 class RichTextToolbar extends Component {
@@ -180,6 +178,14 @@ class RichTextToolbar extends Component {
       </View>
     )
   }
+
+  getGridWidth () {
+    const screenWidth = Dimensions.get('window').width
+    const { imagePerRow, imageGapWidth } = this.props
+    const gridWidth =
+      (screenWidth - imageGapWidth * (imagePerRow + 1)) / imagePerRow
+    return gridWidth
+  }
   
   onPressAddImage = () => {
     const width = Dimensions.get('window').width
@@ -251,7 +257,7 @@ class RichTextToolbar extends Component {
         image.originalHeight = image.height
 
         if (this.props.isGridView) {
-          image.width = ( width - (5 * (imagePerRow + 1)) ) / imagePerRow
+          image.width = this.getGridWidth()
           image.height = image.width
         } else {
           image.width = width
