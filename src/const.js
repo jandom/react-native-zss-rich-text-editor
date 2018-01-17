@@ -35,6 +35,7 @@ export const actions = {
   updateLink: 'UPDATE_LINK',
   insertImage: 'INST_IMAGE',
   insertImageIntoGrid: 'INST_IMAGE_GRID',
+  takePhoto: 'TAKE_PHOTO',
   updateImageWithUrl: 'UPDATE_IMAGE_WITH_URL',
   removeDimFilter: 'REMOVE_DIM_FILTER',
   takePicture: 'TAKE_PICTURE',
