@@ -472,8 +472,8 @@ export default class RichTextEditor extends Component {
     this._sendAction(actions.updateLink, {url, title});
   }
 
-  insertImage(attributes, closeImageData) {
-    this._sendAction(actions.insertImage, {attributes, closeImageData});
+  insertImage(attributes, closeImageData, showVideoThumbnail = false) {
+    this._sendAction(actions.insertImage, {attributes, closeImageData, showVideoThumbnail});
     this.prepareInsert(); //This must be called BEFORE insertImage. But WebViewBridge uses a stack :/
   }
 

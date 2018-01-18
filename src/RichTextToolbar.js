@@ -24,6 +24,7 @@ const leftActions = [
 const rightActions = [
   actions.takeVideo,
   actions.insertImage,
+  actions.takePhoto,
 ];
 
 function getDefaultIcon() {
@@ -31,6 +32,7 @@ function getDefaultIcon() {
   texts[actions.hashTag] = require('../img/icoTag.png');
   texts[actions.takeVideo] = require('../img/icoYoutubeUrl.png');
   texts[actions.insertImage] = require('../img/icoCamera.png');
+  texts[actions.takePhoto] = require('../img/icoPhoto.png');
   texts[actions.setBold] = require('../img/icon_format_bold.png');
   texts[actions.setItalic] = require('../img/icon_format_italic.png');
   texts[actions.insertBulletsList] = require('../img/icon_format_ul.png');
@@ -52,6 +54,7 @@ type Props = {
 }
 
 class RichTextToolbar extends Component {
+  screenWidth: number
 
   static propTypes = {
     getEditor: PropTypes.func.isRequired,
@@ -59,6 +62,7 @@ class RichTextToolbar extends Component {
     onPressAddLink: PropTypes.func,
     onPressAddImage: PropTypes.func,
     onVideoBtnPressed: PropTypes.func,
+    onCameraBtnPressed: PropTypes.func,
     onHashTagBtnPressed: PropTypes.func,
     selectedButtonStyle: PropTypes.object,
     iconTint: PropTypes.any,
@@ -72,6 +76,7 @@ class RichTextToolbar extends Component {
   constructor(props) {
     super(props);
     const actions = this.props.actions ? this.props.actions : defaultActions;
+    this.screenWidth = Dimensions.get('window').width
     this.state = {
       editor: undefined,
       selectedItems: [],
@@ -180,15 +185,39 @@ class RichTextToolbar extends Component {
   }
 
   getGridWidth () {
-    const screenWidth = Dimensions.get('window').width
+    const screenWidth = this.screenWidth
+    const editor = this.props.getEditor();
     const { imagePerRow, imageGapWidth } = this.props
     const gridWidth =
       (screenWidth - imageGapWidth * (imagePerRow + 1)) / imagePerRow
     return gridWidth
   }
+
+  onVideoAdded = (videoData) => {
+    const editor = this.props.getEditor();
+    const thumbnail = videoData.getIn(['additionalInfo', 'metadata', 'youtube'])
+    const thumbnailUrl = thumbnail.get('thumbnailUrl')
+    const width = thumbnail.get('width')
+    const height = thumbnail.get('height')
+    const mediaId = videoData.get('mediaId')
+
+    let image = {}
+    image.localId = this.randomIdentifier()
+    image.groupId = this.randomIdentifier()
+    image.src = thumbnailUrl
+    image.mediaId = mediaId
+
+    const calibratedSize = this.getCalibratedSize(width, height)
+    image = {
+      ...image,
+      ...calibratedSize
+    }
+
+    editor.insertImage(image, closeImageData, true)
+  }
   
   onPressAddImage = () => {
-    const width = Dimensions.get('window').width
+    const screenWidth = this.screenWidth
     const editor = this.props.getEditor();
     const { isGridView } = this.props
     ImagePicker.openPicker({
@@ -200,33 +229,6 @@ class RichTextToolbar extends Component {
       smartAlbums: ['UserLibrary'],
     }).then(images => {
 
-      const closeImageData =
-      'data:image/png;base64,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' +
-      'ugAAAABJRU5ErkJggg=='
-
       let groupId = this.randomIdentifier()
 
       images.reverse().map(image => {
@@ -236,6 +238,8 @@ class RichTextToolbar extends Component {
 
         image.src = 'data:image/png;base64,' + image.data
         image.data = undefined
+        image.originalWidth = image.width
+        image.originalHeight = image.height
 
         // Handling for android
         if (image.filename === undefined) {
@@ -245,23 +249,16 @@ class RichTextToolbar extends Component {
           image.sourceURL = image.path
         }
         // temp fix, since this is required by api at the moment, although it seems it is not used anywhere
-        if (image.localidentifier === undefined) {
-          image.localidentifier = image.localId
+        if (image.mediaId === undefined) {
+          image.mediaId = image.localId
         }
 
         this.props.uploadImage([image]);
-        
-        // calculate correct image size for display
-        let ratio = image.width / image.height
-        image.originalWidth = image.width
-        image.originalHeight = image.height
-
-        if (this.props.isGridView) {
-          image.width = this.getGridWidth()
-          image.height = image.width
-        } else {
-          image.width = width
-          image.height = width / ratio
+       
+        const calibratedSize = this.getCalibratedSize(image.width, image.height)
+        image = {
+          ...image,
+          ...calibratedSize
         }
   
         // all prop of image here will be passed as prop of <img> in webview
@@ -272,6 +269,23 @@ class RichTextToolbar extends Component {
         }
       })
     })
+  }
+
+  getCalibratedSize = (width, height) => {
+    const screenWidth = this.screenWidth
+    let result = {}
+
+    // calculate correct image size for display
+    let ratio = width / height
+
+    if (this.props.isGridView) {
+      result.width = this.getGridWidth()
+      result.height = width
+    } else {
+      result.width = screenWidth
+      result.height = screenWidth / ratio
+    }
+    return result
   }
 
   randomIdentifier = () => {
@@ -342,12 +356,45 @@ class RichTextToolbar extends Component {
           this.props.onVideoBtnPressed();
         }
         break;
+      case actions.takePhoto:
+        this.state.editor.prepareInsert();
+        if(this.props.onCameraBtnPressed) {
+          this.props.onCameraBtnPressed();
+        }
+        break;
       case actions.hashTag:
-      this.props.onHashTagBtnPressed && this.props.onHashTagBtnPressed()
+        this.props.onHashTagBtnPressed && this.props.onHashTagBtnPressed()
         break;
     }
   }
 }
+
+const closeImageData =
+'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAB4CAYAAAA5ZDbSAAAAAXNSR0IArs4c6QAABR9JREFUeAHt' +
+'3LtrVEEUBvC5m+CzSCIJKLETrVR8xFqt1E4NpPA/ELEWtVXEWgQrS4U0pvJRBWsjPitFK0XBkEfh' +
+'K8SscxJHkiUn2fvcM9/9plkcdnPnfL+d3Tt7r5MM3p1rOjbYBBqwlbGwxQQIDP5GIDCBwRMAL48z' +
+'mMDgCYCXxxlMYPAEwMvjDCYweALg5XEGExg8AfDyOIMJDJ4AeHmcwQQGTwC8PM5gAoMnAF4eZzCB' +
+'wRMAL48zmMDgCYCXxxlMYPAEwMvjDCYweALg5XEGExg8AfDyOIMJDJ4AeHmcwQQGTwC8PM5gAoMn' +
+'AF4eZzA4cHcM9R3oT9yxwcTNzDk39mFh8bET4+7Z4NzZXQ3Xt9G58U9N92LS/vYmifVNWM7vbbgr' +
+'Qw2XJMmi6dcfTXfuybx7N1Mt8e4e5+6f7HbbtyyNQ45+Y+KPu/1modqBpDya6Y/oC/sa7uqRrv+4' +
+'UpsEPOqD3tObstIcTxfc0VMrceXPXR7qchf3m47QmR2d4EqAq7X+zdUhB9wBf8zV2qXDtpFNAsvH' +
+'soYbQq4CeT3cMBZBljekxWZuVHJCJd+57bQykdvFDeOUN+RBP3Zrrb0kKxz18Z3Jiu/c9Q5dBnJa' +
+'3DDGo/5M31ozBzzzO31ERSJnxZVRT2cYe/pq073CHPADv86VpVDaVgRyHtwv35tu7KO9JZM5YPkx' +
+'Q9a5kz+rRc6D+82PVcY868durZkDloDkR4yRx9Uh58UdeTTv3s9ao10aj0ngKpGRcSVHs8BVIKPj' +
+'mgcuE7kOuFEAl4FcF9xogItErhOu5Gb+cqEMcnmTq0hyNUnWvWnb9K+mk8XXtk3pXytLIctny1oW' +
+'pk+yVht0niVUn4etE67kFx2wDDoPsrw+TYt15oYaowSWwVeBHDuu5BQtcNnICLjRA5eFjIILAVw0' +
+'MhIuDPByZFkKZW1T/rUxLoXWqjfq7+DWwpreNjuv/1HA/8F/d+e2/ulo/w0DHH6hyrLODXqyTq76' +
+'ltxw7LIeIYADrnZra5rwirgzJM3xyn5u9MBF4oawkZCjBi4DFw05WuAycZGQowSuAhcFOTrgPLiy' +
+'zs2yTo75Ozkq4Dy48gvV8MN5N+zvgKz6ltzwadCJx2iA8+KGX6jyXIWKcSZHAVwUbphBdUI2D1w0' +
+'bt2QTQOXhVsnZLPAZePWBdkkcFW4dUA2ByxbFd070e2yXDjIc7E+74mXjLnXj91aMwd8xu9DtWNr' +
+'Z+5bzoMsu//I2K01cyPKMgvyzNxWkDzIvX6DNGvNHPDTz+nuySgSN+BkQW7620lk9ztrzRywbA8o' +
+'O8i108rADcdNi3x9YsG9NLi1oTlgCVi2B7z5fG3kMnHTIssb8s5be/tzSB0mgWVgt17ryFXgyhik' +
+'rTeTre9XaRZYwhXk1o9r2c0mXDiQ51TRAvLy3X/kO/faM/ubkUbx30cPDSxtJzzl96GSbZY6tZuN' +
+'nOGf9ksheRz3J4OvDH7ntr7howBuHTT/3X4Cpj+i2y+Dz9QSILCWDEg/gUEgtTIIrCUD0k9gEEit' +
+'DAJryYD0ExgEUiuDwFoyIP0EBoHUyiCwlgxIP4FBILUyCKwlA9JPYBBIrQwCa8mA9BMYBFIrg8Ba' +
+'MiD9BAaB1MogsJYMSD+BQSC1MgisJQPST2AQSK0MAmvJgPQTGARSK4PAWjIg/QQGgdTKILCWDEg/' +
+'gUEgtTIIrCUD0k9gEEitDAJryYD0ExgEUiuDwFoyIP0EBoHUyiCwlgxIP4FBILUy/gJqyGPlqK1K' +
+'ugAAAABJRU5ErkJggg=='
 
 const styles = StyleSheet.create({
   container: {

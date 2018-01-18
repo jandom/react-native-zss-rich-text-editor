@@ -1402,6 +1402,15 @@
 				'BAgACB0gLunCodv+J7E3DnVG+J6S+BBwHf4z5gWCTQi4CB20tS+kngQcDAfcCwSIAAAQIECBAgQIAAAQIECBAgQIAAAQIbAu6c2gCymkAkAXdORUpDXwjsFP' + 
 				'A97k4wmxOIIGDgRkhBHwjsFDBwd4LZnAABAgQIECBAoIrAbV7oeLl5/vz88bM/WaK9udzPx/yWXRwvyy7z4+U/JtzBN/jsbp8AAAAASUVORK5CYII='
 
+			const playImageData = 
+				'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADEAAAA/CAYAAAE+kRD6AAAAAXNSR0IArs4c6QAABDNJREFUaAXVWU1SFDEYHSxY4IJSd7IeDi' + 'AnkCOIV0A3ugVd6g6t0gsAR0BvAJ4ADgBrWOoKFlLge03SfknntzsZplOVSfL9v3Tn6yQzubu7O5z4CphNcfEfaaKSudVjti1TERcopAWMgSaqdmnRIjTDBR' +
+				'R2DKYmaoXWp83QAu5WhX9hc40opUmDobUo4GRQwAibBG2uDVkS2Z/I+WoI+keF206mpodaX2BLiOPGp2jEJoT+6gjQTgX9viuYKd0tavnC6xgH4RIhrzaMiH' +
+				'n3S+1QakJwuWppSqkLtpUo0VFeTlJtGbOmX6iQsvFAlberZAUluKwUn7gUjZCcAohT0o2QJEP3lbcNPY560IJsOSlZCtC5XpQWQn0aJz+KATKnWpgKQQ9SkM' +
+				'IsPg9fXcJU6HjwCVKYRXrYiAk3GnwwTSf1Rz1JNvUWknAiu+3rkxpsUE5a9vS3ggZSmB7DPvJuis2OjM9aAt2dXjse8pK7Q70lcQmttyOrk7vKLXXn8P+XRr' +
+				'FrOJGerzFYkStRMkv032AKH6PedPLDQOsbMPrLtlHCyRoMn9uG5biPE+atZzD8RxoK9VOdNA8Qhr1bqpCTZsfnWXidvWnQUIhpOUjebIRsdnhwkpweOsqpBD' + 'h5nirbS05N1XEv5RQl61m8SNHJkrEccHiWZSAm7HCgSa9iuin8WMblCuZKztuJCM+xbMtd7i0g7QidrG4MgTTGtLECNEwjySWGQBpiHrsCmj1JjPVzENi2Vo' + 'Hm0iba4xwEtu4F0EQX6BAE0uE60JxKgu6XckB753Cypg3rdsgUaRu6naoVuqkJbEsikHbbBVrLgXb2oeQUaaOyXUjdBEillH47RTUQvMbb9BS1SZAlEVR9Tb' +
+				'nQOmuAczl0io5hmMW5iulgyBRVS3b790HHM2kugqofnI+ImveLWV+zFATtgqFwnxJ6i4wF08d4o6NSrGyqbryqbR2Pek9BTBFzM5Pt+2842kI1rh1jwc0NX7' + '5Bqs8N3A7qkFQ1W3wOEJLE/xN2UZdnG1WmNxlxpM8Dwx4qDw/zVSKBh9iHYNZdsKlTFYoyg3cM2Wmqz+JyGYGmip5AsPyHIIQ8NbKecmfQK3tz7wLTM7g+aj' +
+				'ytGscuVzx9aKEdTR97IR0mASYDlqIf11mCkACZpnkjwrQ9+ONa+5wrA0/pc4v/HfVTzk583kBIoDzJHqBuAxBPAt4yzyDsoH+A8B6AOndlYwIhQfFO7i0AnZ' + 'M4VhAS0P54ttsy7MnEeBJjAvETON651sRDfSfMeXWPmJ32UXnnxrKJ2lnUVJ23J9HrOzEPIHi99Bn1G2aaILLLQ4Hgx2sb9QCB87UZVprt2Gx+qu1iQ/+Al4' + 'DG88TLYdOcoF0iUsvGaE92RwAyTZizOiLWLOYMR3nbMdp7J94AfkEd3Q3g4ONinRc/YFUtgqIH94C7Kqx/aEtW0XIRa30AAAAASUVORK5CYII='
+
 			const addImageButtonId = 'addImageButton'
 
 			zss_editor.createImageGroupContainerIfNeeded = function (imageGroupContainerId) {
@@ -1487,6 +1496,7 @@
 				zss_editor.restorerange(); 
 				var attributes = data['attributes']
 				var closeImageData = data['closeImageData']
+				var showVideoThumbnail = data['showVideoThumbnail']
 				
 				var localId = attributes['localId'];
 				var groupId = attributes['groupId'];
@@ -1505,9 +1515,11 @@
 				// prevent user input within the image group
 				$('#'+imageGroupContainerId).attr('contenteditable', 'false');
 
+				// don't dim if video thumbnail is shown
+				var imageLoadingView = showVideoThumbnail? '<img src="'+playImageData+'" class="playImage" contenteditable="false">' : '<div class="imageLoading" id="'+imageLoadingId+'"></div>';
+
 				var imageContainer = $('<div>'+
-					'<div class="imageContainer" id="'+imageContainerId+'">'+
-					'<div class="imageLoading" id="'+imageLoadingId+'"></div>'+
+					'<div class="imageContainer" id="'+imageContainerId+'">' + imageLoadingView +
 					'<input id="'+closeButtonId+'" class="closeButton" type="image" src="'+closeImageData+'" data="'+imageContainerId+'">'+
 					'<img class="insertedImage" id="'+insertedImageId+'"></div></div>');
 
@@ -1894,6 +1906,16 @@
 				background-color: black;
 				opacity: 0.5;
 				z-index: 1;
+			}
+
+			.playImage {
+				position:absolute;
+				display:block;
+				top:0;
+				left:0;
+				right:0;
+				bottom:0;
+				margin:auto;
 			}
 
 			.insertedImage {
