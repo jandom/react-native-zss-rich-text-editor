@@ -14,7 +14,8 @@ const create = (baseURL = Config.UGC_API_BASE_URL): ApiClient => {
   const api = apisauce.create({
     baseURL,
     headers: {
-      'Cache-Control': 'no-cache'
+      'Cache-Control': 'no-cache',
+      'x-debug-authorization': 'BearerParams account_id=14&source=PUBLIC'
     },
     timeout: 10000
   })
