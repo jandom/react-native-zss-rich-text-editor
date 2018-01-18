@@ -280,7 +280,7 @@ class RichTextToolbar extends Component {
 
     if (this.props.isGridView) {
       result.width = this.getGridWidth()
-      result.height = width
+      result.height = result.width
     } else {
       result.width = screenWidth
       result.height = screenWidth / ratio
