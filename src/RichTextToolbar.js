@@ -31,8 +31,8 @@ function getDefaultIcon() {
   const texts = {};
   texts[actions.hashTag] = require('../img/icoTag.png');
   texts[actions.takeVideo] = require('../img/icoYoutubeUrl.png');
-  texts[actions.insertImage] = require('../img/icoCamera.png');
-  texts[actions.takePhoto] = require('../img/icoPhoto.png');
+  texts[actions.insertImage] = require('../img/icoPhoto.png');
+  texts[actions.takePhoto] = require('../img/icoCamera.png');
   texts[actions.setBold] = require('../img/icon_format_bold.png');
   texts[actions.setItalic] = require('../img/icon_format_italic.png');
   texts[actions.insertBulletsList] = require('../img/icon_format_ul.png');
@@ -249,9 +249,9 @@ class RichTextToolbar extends Component {
           image.sourceURL = image.path
         }
         // temp fix, since this is required by api at the moment, although it seems it is not used anywhere
-        if (image.mediaId === undefined) {
-          image.mediaId = image.localId
-        }
+        // if (image.mediaId === undefined) {
+          image.mediaId = '5a6194257fdc68c9182203a1'//image.localId
+        // }
 
         this.props.uploadImage([image]);
        
