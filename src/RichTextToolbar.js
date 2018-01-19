@@ -48,6 +48,7 @@ type Props = {
   errorMessage: string,
   uploadImage: Function,
   imgLocalId: string,
+  mediaId: string,
   hasTags: boolean,
   imagePerRow: number,
   imageGapWidth: number,
@@ -106,10 +107,11 @@ class RichTextToolbar extends Component {
   componentDidUpdate() {
     const imgUrl = this.props.imgUrl
     const imgLocalId = this.props.imgLocalId
+    const mediaId = this.props.mediaId
 
-    if (imgUrl && imgLocalId) {
+    if (imgUrl && mediaId && imgLocalId) {
       const editor = this.props.getEditor();
-      editor.updateImageWithUrl(imgUrl, imgLocalId)
+      editor.updateImageWithUrl(imgUrl, mediaId, imgLocalId)
     }
   }
   
@@ -207,7 +209,7 @@ class RichTextToolbar extends Component {
     image.src = thumbnailUrl
     image.mediaId = mediaId
 
-    const calibratedSize = this.getCalibratedSize(width, height)
+    const calibratedSize = this.getCalibratedSize(width, height, true)
     image = {
       ...image,
       ...calibratedSize
@@ -249,9 +251,9 @@ class RichTextToolbar extends Component {
           image.sourceURL = image.path
         }
         // temp fix, since this is required by api at the moment, although it seems it is not used anywhere
-        // if (image.mediaId === undefined) {
-          image.mediaId = '5a6194257fdc68c9182203a1'//image.localId
-        // }
+        if (image.mediaId === undefined) {
+          image.mediaId = image.localId
+        }
 
         this.props.uploadImage([image]);
        
@@ -271,14 +273,14 @@ class RichTextToolbar extends Component {
     })
   }
 
-  getCalibratedSize = (width, height) => {
+  getCalibratedSize = (width, height, ignoreGrid = false) => {
     const screenWidth = this.screenWidth
     let result = {}
 
     // calculate correct image size for display
     let ratio = width / height
 
-    if (this.props.isGridView) {
+    if (!ignoreGrid && this.props.isGridView) {
       result.width = this.getGridWidth()
       result.height = result.width
     } else {
@@ -448,6 +450,7 @@ const mapStateToProps = (state, props) => {
   return {
     fetching: state.textEditor.get('fetching'),
     imgUrl: state.textEditor.get('imgUrl'),
+    mediaId: state.textEditor.get('mediaId'),
     imgLocalId: state.textEditor.get('imgLocalId'),
     errorMessage: state.textEditor.get('errorMessage'),
   }

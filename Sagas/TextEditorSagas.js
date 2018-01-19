@@ -13,15 +13,18 @@ export function * uploadImage (api, { images }) {
 
     // TODO: update response path later
     const imageResponse = path(['data', 'images'], response) 
+    const imageInfo = imageResponse[0]
     let imgUrls = []
 
-    const imgUrl = prop('url', imageResponse[0])
+    const imgUrl = prop('url', imageInfo)
+    const mediaId = prop('mediaId', imageInfo)
     const imgLocalId = prop('localId', images[0])
     
     if (response.ok) {
       yield put(
         TextEditorActions.textEditorSuccess(
           imgUrl,
+          mediaId,
           imgLocalId
         )
       )
