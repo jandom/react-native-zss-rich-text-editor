@@ -10,18 +10,20 @@ const prop = require('ramda/src/prop')
 export function * uploadImage (api, { images }) {
   try {
     const response = yield call(api.uploadImage, images)
-
-    // TODO: update response path later
     const imageResponse = path(['data', 'images'], response) 
-    let imgUrls = []
-
-    const imgUrl = prop('url', imageResponse[0])
-    const imgLocalId = prop('localId', images[0])
     
-    if (response.ok) {
+    if (response.ok && Array.isArray(imageResponse)) {
+      const imageInfo = imageResponse.length > 0? imageResponse[0] : {}
+      let imgUrls = []
+  
+      const imgUrl = prop('url', imageInfo)
+      const mediaId = prop('mediaId', imageInfo)
+      const imgLocalId = prop('localId', images[0])
+
       yield put(
         TextEditorActions.textEditorSuccess(
           imgUrl,
+          mediaId,
           imgLocalId
         )
       )

@@ -1553,10 +1553,12 @@
 			zss_editor.updateImageWithUrl = function(data) {
 				zss_editor.restorerange(); 
 				var url = data['url'];
+				var mediaId = data['mediaId'];
 				var localId = data['localId'];
 				var insertedImageId = 'insertedImage' + localId;
 
 				$('#'+insertedImageId).attr('src', url);
+				$('#'+insertedImageId).attr('mediaId', mediaId);
 
 				zss_editor.removeDimFilter(localId)
 			}

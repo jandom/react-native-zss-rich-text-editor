@@ -5,7 +5,7 @@ import { Map } from 'immutable'
 
 const { Types, Creators } = createActions({
   textEditorRequest: ['images'],
-  textEditorSuccess: ['imgUrl', 'imgLocalId'],
+  textEditorSuccess: ['imgUrl', 'mediaId', 'imgLocalId'],
   textEditorFailure: ['errorMessage'],
 })
 
@@ -32,7 +32,7 @@ export const request = (state, { images }) =>
 
 export const success = (
   state,
-  { imgUrl, imgLocalId }
+  { imgUrl, mediaId, imgLocalId }
 ) => {
   return state
     .merge({
@@ -40,6 +40,7 @@ export const success = (
       hasError: false,
       errorMessage: '',
       imgUrl,
+      mediaId,
       imgLocalId,
     })
   }
