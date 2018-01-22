@@ -197,10 +197,9 @@ class RichTextToolbar extends Component {
 
   onVideoAdded = (videoData) => {
     const editor = this.props.getEditor();
-    const thumbnail = videoData.getIn(['additionalInfo', 'metadata', 'youtube'])
-    const thumbnailUrl = thumbnail.get('thumbnailUrl')
-    const width = thumbnail.get('width')
-    const height = thumbnail.get('height')
+    const thumbnailUrl = videoData.get('thumbnail')
+    const width = videoData.get('thumbnailWidth')
+    const height = videoData.get('thumbnailHeight')
     const mediaId = videoData.get('mediaId')
 
     let image = {}
