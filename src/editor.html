@@ -1413,10 +1413,11 @@
 
 			const addImageButtonId = 'addImageButton'
 
-			zss_editor.createImageGroupContainerIfNeeded = function (imageGroupContainerId) {
+			zss_editor.createImageGroupContainerIfNeeded = function (imageGroupContainerId, showVideoThumbnail = false) {
 				// create imageGroupContainer if not existed
+				const videoTypeAttr = showVideoThumbnail? 'type="VIDEO"' : '';
 				if ($('#'+imageGroupContainerId).length == 0) {
-					var imageGroupContainer = $('<div><div class="imageGroupContainer" id="'+imageGroupContainerId+'">'+
+					var imageGroupContainer = $('<div><div class="imageGroupContainer" id="'+imageGroupContainerId+'" '+videoTypeAttr+'>'+
 						'</div></div>');
 					zss_editor.insertHTML(imageGroupContainer.html());
 				}
@@ -1510,7 +1511,7 @@
 				var width = attributes['width'];
 				var height = attributes['height'];
 
-				zss_editor.createImageGroupContainerIfNeeded(imageGroupContainerId)
+				zss_editor.createImageGroupContainerIfNeeded(imageGroupContainerId, showVideoThumbnail)
 
 				// prevent user input within the image group
 				$('#'+imageGroupContainerId).attr('contenteditable', 'false');
