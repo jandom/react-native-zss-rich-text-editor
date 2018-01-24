@@ -31,6 +31,7 @@ export function * uploadImage (api, { images }) {
       const errorCodes = pathOr([], ['data', 'errors'], response)
       // only use first error code for error message
       const firstErrorCode = pathOr(null, ['data', 'errors', 0], response)
+      console.log('uploadImage error :', response)
       yield put(
         TextEditorActions.textEditorFailure(
           pathOr(null, ['data'], response)
