@@ -195,6 +195,24 @@ class RichTextToolbar extends Component {
     return gridWidth
   }
 
+  onPhotoTaken = (photoPath, photoData) => {
+    const editor = this.props.getEditor();
+    let groupId = this.randomIdentifier()
+    const width = 360
+    const height = 480
+
+    this.insertAndUploadImage(
+      {},
+      editor,
+      this.randomIdentifier(),
+      groupId,
+      photoPath,
+      photoData,
+      width,
+      height
+    )
+  }
+
   onVideoAdded = (videoData) => {
     const editor = this.props.getEditor();
     const thumbnailUrl = videoData.get('thumbnail')
@@ -218,9 +236,7 @@ class RichTextToolbar extends Component {
   }
   
   onPressAddImage = () => {
-    const screenWidth = this.screenWidth
     const editor = this.props.getEditor();
-    const { isGridView } = this.props
     ImagePicker.openPicker({
       multiple: true,
       includeBase64: true,
@@ -233,43 +249,67 @@ class RichTextToolbar extends Component {
       let groupId = this.randomIdentifier()
 
       images.reverse().map(image => {
-        image.localId = this.randomIdentifier()
-        // GridView only need 1 image group container
-        image.groupId = isGridView? '0' : groupId
-
-        image.src = 'data:image/png;base64,' + image.data
-        image.data = undefined
-        image.originalWidth = image.width
-        image.originalHeight = image.height
-
-        // Handling for android
-        if (image.filename === undefined) {
-          image.filename = image.path.substring(image.path.lastIndexOf('/')+1, image.path.length)
-        }
-        if (image.sourceURL === undefined) {
-          image.sourceURL = image.path
-        }
-        // temp fix, since this is required by api at the moment, although it seems it is not used anywhere
-        if (image.mediaId === undefined) {
-          image.mediaId = image.localId
-        }
-
-        this.props.uploadImage([image]);
-       
-        const calibratedSize = this.getCalibratedSize(image.width, image.height)
-        image = {
-          ...image,
-          ...calibratedSize
-        }
-  
-        // all prop of image here will be passed as prop of <img> in webview
-        if (this.props.isGridView) {
-          editor.insertImageIntoGrid(image, closeImageData)
-        } else {
-          editor.insertImage(image, closeImageData)
-        }
+        this.insertAndUploadImage(
+          image,
+          editor,
+          this.randomIdentifier(),
+          groupId,
+          image.path,
+          image.data,
+          image.width,
+          image.height
+        )
       })
     })
+  }
+
+  insertAndUploadImage = (
+    image: {},
+    editor: Object,
+    localId: string,
+    groupId: string,
+    path: string,
+    data: string,
+    width: number,
+    height: number,
+  ) => {
+    image.localId = localId
+    // GridView only need 1 image group container
+    image.groupId = this.props.isGridView? '0' : groupId
+
+    image.src = 'data:image/png;base64,' + data
+    image.originalWidth = width
+    image.originalHeight = height
+
+    if (!image.path) {
+      image.path = path
+    }
+    // Handling for android
+    if (!image.filename) {
+      image.filename = path.substring(path.lastIndexOf('/')+1, path.length)
+    }
+    if (!image.sourceURL) {
+      image.sourceURL = path
+    }
+    // temp fix, since this is required by api at the moment, although it seems it is not used anywhere
+    if (!image.mediaId) {
+      image.mediaId = image.localId
+    }
+
+    this.props.uploadImage([image]);
+   
+    const calibratedSize = this.getCalibratedSize(width, height)
+    image = {
+      ...image,
+      ...calibratedSize
+    }
+
+    // all prop of image here will be passed as prop of <img> in webview
+    if (this.props.isGridView) {
+      editor.insertImageIntoGrid(image, closeImageData)
+    } else {
+      editor.insertImage(image, closeImageData)
+    }
   }
 
   getCalibratedSize = (width, height, ignoreGrid = false) => {
