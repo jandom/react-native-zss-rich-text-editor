@@ -22,10 +22,11 @@ const leftActions = [
 ];
 
 const rightActions = [
-  actions.takeVideo,
   actions.insertImage,
   actions.takePhoto,
 ];
+
+const rightActionsWithVideo = [actions.takeVideo, ...rightActions]
 
 function getDefaultIcon() {
   const texts = {};
@@ -343,7 +344,7 @@ class RichTextToolbar extends Component {
           <View style={styles.toolbarUpperline}/>
           <View style={styles.toolbarRow}>
             {this._renderActionBtnContainer(leftActions)}
-            {this._renderActionBtnContainer(rightActions)}
+            {this._renderActionBtnContainer(this.props.isGridView? rightActions : rightActionsWithVideo)}
           </View>
         </View>
       </View>
