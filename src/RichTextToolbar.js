@@ -187,15 +187,6 @@ class RichTextToolbar extends Component {
     )
   }
 
-  getGridWidth () {
-    const screenWidth = this.screenWidth
-    const editor = this.props.getEditor();
-    const { imagePerRow, imageGapWidth } = this.props
-    const gridWidth =
-      (screenWidth - imageGapWidth * (imagePerRow + 1)) / imagePerRow
-    return gridWidth
-  }
-
   onPhotoTaken = (photoPath, photoData) => {
     const editor = this.props.getEditor();
     let groupId = this.randomIdentifier()
@@ -226,12 +217,6 @@ class RichTextToolbar extends Component {
     image.groupId = this.randomIdentifier()
     image.src = thumbnailUrl
     image.mediaId = mediaId
-
-    const calibratedSize = this.getCalibratedSize(width, height, true)
-    image = {
-      ...image,
-      ...calibratedSize
-    }
 
     editor.insertImage(image, closeImageData, true)
   }
@@ -281,6 +266,8 @@ class RichTextToolbar extends Component {
     image.src = 'data:image/png;base64,' + data
     image.originalWidth = width
     image.originalHeight = height
+    image.data = undefined
+    image.height = undefined
 
     if (!image.path) {
       image.path = path
@@ -298,36 +285,22 @@ class RichTextToolbar extends Component {
     }
 
     this.props.uploadImage([image]);
-   
-    const calibratedSize = this.getCalibratedSize(width, height)
-    image = {
-      ...image,
-      ...calibratedSize
-    }
 
     // all prop of image here will be passed as prop of <img> in webview
     if (this.props.isGridView) {
+      image = {
+        ...image,
+        width: '100%',
+        height: '100%',
+      }
       editor.insertImageIntoGrid(image, closeImageData)
     } else {
+      image = {
+        ...image,
+        width: '100%',
+      }
       editor.insertImage(image, closeImageData)
     }
-  }
-
-  getCalibratedSize = (width, height, ignoreGrid = false) => {
-    const screenWidth = this.screenWidth
-    let result = {}
-
-    // calculate correct image size for display
-    let ratio = width / height
-
-    if (!ignoreGrid && this.props.isGridView) {
-      result.width = this.getGridWidth()
-      result.height = result.width
-    } else {
-      result.width = screenWidth
-      result.height = screenWidth / ratio
-    }
-    return result
   }
 
   randomIdentifier = () => {

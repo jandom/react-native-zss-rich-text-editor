@@ -1439,8 +1439,31 @@
 				}
 			}
 
+			zss_editor.updateGridView = function(data) {
+				var calibratedWidth = data['calibratedWidth']
+				var calibratedHeight = data['calibratedHeight']
+
+				zss_editor.updateGridViewWithSize(calibratedWidth, calibratedHeight);
+			}
+
+			zss_editor.updateGridViewWithSize = function(calibratedWidth, calibratedHeight) {
+				// check if DOM is already existed
+				if ($(".gridImageContainer").length != 0) {
+					$(".gridImageContainer").width(calibratedWidth);
+					$(".gridImageContainer").height(calibratedHeight);
+				} else {
+					$(document).bind('DOMNodeInserted',function(e){
+						var target = e.target; //inserted element;
+						if (target.id == 'imageGroupContainer0') {
+							$(".gridImageContainer").width(calibratedWidth);
+							$(".gridImageContainer").height(calibratedHeight);
+						}
+					});
+				}
+			}
+
 			zss_editor.insertImageIntoGrid = function(data) {
-				zss_editor.restorerange(); 
+				zss_editor.restorerange();
 				var attributes = data['attributes']
 				var closeImageData = data['closeImageData']
 				var localId = attributes['localId'];
@@ -1452,8 +1475,8 @@
 				var imageContainerId = 'imageContainer' + localId;
 				var closeButtonId = 'closeButton' + localId
 				var insertedImageId = 'insertedImage' + localId
-				var width = attributes['width'];
-				var height = attributes['height'];
+				var calibratedWidth = attributes['calibratedWidth'];
+				var calibratedHeight = attributes['calibratedHeight'];
 
 				zss_editor.createGridImageGroupContainerIfNeeded(data)
 
@@ -1478,10 +1501,10 @@
 						$("#"+imageContainerId).remove();
 					}
 				});
-				
+
 				// change imageContainer's size to fit image size
-				$("#"+imageContainerId).width(width)
-				$("#"+imageContainerId).height(height)
+				$("#"+imageContainerId).width('100%')
+				$("#"+imageContainerId).height('100%')
 
 				// create p after image group if not exist
 				if ($('#'+pAfterImageGroupContainerId).length == 0) {
@@ -1491,6 +1514,10 @@
 				// move cursor to p
 				zss_editor.focusEditor(pAfterImageGroupContainerId)
 				zss_editor.enabledEditingItems();
+
+				WebViewBridge.send(JSON.stringify({type: 'INSERTED_IMAGE'}));
+
+				zss_editor.updateGridViewWithSize(calibratedWidth, calibratedHeight);
 			}
 
 			zss_editor.insertImage = function(data) {
@@ -1508,8 +1535,6 @@
 				var imageContainerId = 'imageContainer' + localId;
 				var closeButtonId = 'closeButton' + localId
 				var insertedImageId = 'insertedImage' + localId
-				var width = attributes['width'];
-				var height = attributes['height'];
 
 				zss_editor.createImageGroupContainerIfNeeded(imageGroupContainerId, showVideoThumbnail)
 
@@ -1538,8 +1563,7 @@
 				});
 				
 				// change imageContainer's size to fit image size
-				$("#"+imageContainerId).width(width)
-				$("#"+imageContainerId).height(height)
+				$("#"+imageContainerId).width('100%')
 
 				// create p after image group if not exist
 				if ($('#'+pAfterImageGroupContainerId).length == 0) {

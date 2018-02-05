@@ -202,6 +202,9 @@ export default class RichTextEditor extends Component {
           });
           break;
         }
+        case messages.INSERTED_IMAGE: {
+          this.updateGridView()
+        }
       }
     } catch(e) {
       //alert('NON JSON MESSAGE');
@@ -338,6 +341,22 @@ export default class RichTextEditor extends Component {
 
   //-------------------------------------------------------------------------------
   //--------------- Public API
+
+  getGridWidth () {
+    const screenWidth = Dimensions.get('window').width
+    const { imagePerRow, imageGapWidth } = this.props
+    const gridWidth =
+      (screenWidth - imageGapWidth * (imagePerRow + 1)) / imagePerRow
+    return gridWidth
+  }
+
+  getCalibratedSize = () => {
+    let result = {}
+    result.calibratedWidth = this.getGridWidth()
+    result.calibratedHeight = result.calibratedWidth
+    
+    return result
+  }
 
   showLinkDialog(optionalTitle = '', optionalUrl = '') {
     this.setState({
@@ -478,8 +497,21 @@ export default class RichTextEditor extends Component {
   }
 
   insertImageIntoGrid(attributes, closeImageData) {
+    const size = this.getCalibratedSize()
+    attributes = {
+      ...attributes,
+      ...size
+    }
     this._sendAction(actions.insertImageIntoGrid, {attributes, closeImageData});
     this.prepareInsert(); //This must be called BEFORE insertImage. But WebViewBridge uses a stack :/
+  }
+  
+  updateGridView() {
+    const size = this.getCalibratedSize()
+    const calibratedWidth = size.calibratedWidth
+    const calibratedHeight = size.calibratedHeight
+
+    this._sendAction(actions.updateGridView, {calibratedWidth, calibratedHeight});
   }
 
   updateImageWithUrl(url, mediaId, localId) {
