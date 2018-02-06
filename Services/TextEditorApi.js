@@ -5,17 +5,16 @@ import { select } from 'redux-saga/effects'
 import apiEndpoints from '../Config/TextEditorEndpoints'
 import type { ApiClient } from '../types/api'
 
-const userJwtSelector = state => state.session.getIn(['profile', 'userJwt'])
-
 const compose = require('ramda/src/compose')
 const map = require('ramda/src/map')
+
+const ugcJwtSelector = state => state.tokens.getIn(['tokens', 'ugc', 'token'])
 
 const create = (baseURL = Config.UGC_API_BASE_URL): ApiClient => {
   const api = apisauce.create({
     baseURL,
     headers: {
-      'Cache-Control': 'no-cache',
-      'x-debug-authorization': 'BearerParams account_id=14&source=PUBLIC'
+      'Cache-Control': 'no-cache'
     },
     timeout: 10000
   })
@@ -25,8 +24,8 @@ const create = (baseURL = Config.UGC_API_BASE_URL): ApiClient => {
   }
 
   const uploadImage = function * (images) {
-    const userJwt = yield select(userJwtSelector)
-    api.setHeader('Authorization', `Bearer ${userJwt}`)
+    const ugcJwt = yield select(ugcJwtSelector)
+    api.setHeader('authorization', `Bearer ${ugcJwt}`)
     api.setHeader('Content-Type', `multipart/form-data`)
     api.setHeader('Accept', `application/json`)
 
