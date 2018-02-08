@@ -947,7 +947,6 @@
 				setTimeout(function() {
 					WebViewBridge.send(JSON.stringify({type: 'ZSS_INITIALIZED'}))
 				}, 20);
-
 			}//end
 
 			function notifyIfSelectedTextHasChanged() {
@@ -1092,9 +1091,11 @@
 				var selection = window.getSelection();
 				selection.removeAllRanges();
 				var range = document.createRange();
-				range.setStart(zss_editor.currentSelection.startContainer, zss_editor.currentSelection.startOffset);
-				range.setEnd(zss_editor.currentSelection.endContainer, zss_editor.currentSelection.endOffset);
-				selection.addRange(range);
+				if (zss_editor.currentSelection) {
+					range.setStart(zss_editor.currentSelection.startContainer, zss_editor.currentSelection.startOffset);
+					range.setEnd(zss_editor.currentSelection.endContainer, zss_editor.currentSelection.endOffset);
+					selection.addRange(range);
+				}
 			}
 
 			zss_editor.getSelectedNode = function() {
@@ -1576,7 +1577,6 @@
 			}
 
 			zss_editor.updateImageWithUrl = function(data) {
-				zss_editor.restorerange(); 
 				var url = data['url'];
 				var mediaId = data['mediaId'];
 				var localId = data['localId'];
@@ -1699,101 +1699,101 @@
 
 			zss_editor.enabledEditingItems = function(e) {
 
-				console.log('enabledEditingItems');
-				var items = [];
-				if (zss_editor.isCommandEnabled('bold')) {
-					items.push('bold');
-				}
-				if (zss_editor.isCommandEnabled('italic')) {
-					items.push('italic');
-				}
-				if (zss_editor.isCommandEnabled('subscript')) {
-					items.push('subscript');
-				}
-				if (zss_editor.isCommandEnabled('superscript')) {
-					items.push('superscript');
-				}
-				if (zss_editor.isCommandEnabled('strikeThrough')) {
-					items.push('strikeThrough');
-				}
-				if (zss_editor.isCommandEnabled('underline')) {
-					items.push('underline');
-				}
-				if (zss_editor.isCommandEnabled('insertOrderedList')) {
-					items.push('orderedList');
-				}
-				if (zss_editor.isCommandEnabled('insertUnorderedList')) {
-					items.push('unorderedList');
-				}
-				if (zss_editor.isCommandEnabled('justifyCenter')) {
-					items.push('justifyCenter');
-				}
-				if (zss_editor.isCommandEnabled('justifyFull')) {
-					items.push('justifyFull');
-				}
-				if (zss_editor.isCommandEnabled('justifyLeft')) {
-					items.push('justifyLeft');
-				}
-				if (zss_editor.isCommandEnabled('justifyRight')) {
-					items.push('justifyRight');
-				}
-				if (zss_editor.isCommandEnabled('insertHorizontalRule')) {
-					items.push('horizontalRule');
-				}
-				var formatBlock = document.queryCommandValue('formatBlock');
-				if (formatBlock.length > 0) {
-					items.push(formatBlock);
-				}
-				// Images
-				$('img').bind('touchstart', function(e) {
-					$('img').removeClass('zs_active');
-					$(this).addClass('zs_active');
-				});
+				// console.log('enabledEditingItems');
+				// var items = [];
+				// if (zss_editor.isCommandEnabled('bold')) {
+				// 	items.push('bold');
+				// }
+				// if (zss_editor.isCommandEnabled('italic')) {
+				// 	items.push('italic');
+				// }
+				// if (zss_editor.isCommandEnabled('subscript')) {
+				// 	items.push('subscript');
+				// }
+				// if (zss_editor.isCommandEnabled('superscript')) {
+				// 	items.push('superscript');
+				// }
+				// if (zss_editor.isCommandEnabled('strikeThrough')) {
+				// 	items.push('strikeThrough');
+				// }
+				// if (zss_editor.isCommandEnabled('underline')) {
+				// 	items.push('underline');
+				// }
+				// if (zss_editor.isCommandEnabled('insertOrderedList')) {
+				// 	items.push('orderedList');
+				// }
+				// if (zss_editor.isCommandEnabled('insertUnorderedList')) {
+				// 	items.push('unorderedList');
+				// }
+				// if (zss_editor.isCommandEnabled('justifyCenter')) {
+				// 	items.push('justifyCenter');
+				// }
+				// if (zss_editor.isCommandEnabled('justifyFull')) {
+				// 	items.push('justifyFull');
+				// }
+				// if (zss_editor.isCommandEnabled('justifyLeft')) {
+				// 	items.push('justifyLeft');
+				// }
+				// if (zss_editor.isCommandEnabled('justifyRight')) {
+				// 	items.push('justifyRight');
+				// }
+				// if (zss_editor.isCommandEnabled('insertHorizontalRule')) {
+				// 	items.push('horizontalRule');
+				// }
+				// var formatBlock = document.queryCommandValue('formatBlock');
+				// if (formatBlock.length > 0) {
+				// 	items.push(formatBlock);
+				// }
+				// // Images
+				// $('img').bind('touchstart', function(e) {
+				// 	$('img').removeClass('zs_active');
+				// 	$(this).addClass('zs_active');
+				// });
 
-				// Use jQuery to figure out those that are not supported
-				if (typeof(e) != "undefined") {
+				// // Use jQuery to figure out those that are not supported
+				// if (typeof(e) != "undefined") {
 
-					// The target element
-					var s = zss_editor.getSelectedNode();
-					var t = $(s);
-					var nodeName = e.target.nodeName.toLowerCase();
+				// 	// The target element
+				// 	var s = zss_editor.getSelectedNode();
+				// 	var t = $(s);
+				// 	var nodeName = e.target.nodeName.toLowerCase();
 
-					// Background Color
-					var bgColor = t.css('backgroundColor');
-					if (bgColor.length != 0 && bgColor != 'rgba(0, 0, 0, 0)' && bgColor != 'rgb(0, 0, 0)' && bgColor != 'transparent') {
-						items.push('backgroundColor');
-					}
-					// Text Color
-					var textColor = t.css('color');
-					if (textColor.length != 0 && textColor != 'rgba(0, 0, 0, 0)' && textColor != 'rgb(0, 0, 0)' && textColor != 'transparent') {
-						items.push('textColor');
-					}
+				// 	// Background Color
+				// 	var bgColor = t.css('backgroundColor');
+				// 	if (bgColor.length != 0 && bgColor != 'rgba(0, 0, 0, 0)' && bgColor != 'rgb(0, 0, 0)' && bgColor != 'transparent') {
+				// 		items.push('backgroundColor');
+				// 	}
+				// 	// Text Color
+				// 	var textColor = t.css('color');
+				// 	if (textColor.length != 0 && textColor != 'rgba(0, 0, 0, 0)' && textColor != 'rgb(0, 0, 0)' && textColor != 'transparent') {
+				// 		items.push('textColor');
+				// 	}
 
-					//Fonts
-					var font = t.css('font-family');
-					if (font.length != 0 && font != 'Arial, Helvetica, sans-serif') {
-						items.push('fonts');
-					}
+				// 	//Fonts
+				// 	var font = t.css('font-family');
+				// 	if (font.length != 0 && font != 'Arial, Helvetica, sans-serif') {
+				// 		items.push('fonts');
+				// 	}
 
-					// Blockquote
-					if (nodeName == 'blockquote') {
-						items.push('indent');
-					}
-					// Image
-					if (nodeName == 'img') {
-						zss_editor.currentEditingImage = t;
-						items.push('image:'+t.attr('src'));
-						if (t.attr('alt') !== undefined) {
-							items.push('image-alt:'+t.attr('alt'));
-						}
+				// 	// Blockquote
+				// 	if (nodeName == 'blockquote') {
+				// 		items.push('indent');
+				// 	}
+				// 	// Image
+				// 	if (nodeName == 'img') {
+				// 		zss_editor.currentEditingImage = t;
+				// 		items.push('image:'+t.attr('src'));
+				// 		if (t.attr('alt') !== undefined) {
+				// 			items.push('image-alt:'+t.attr('alt'));
+				// 		}
 
-					} else {
-						zss_editor.currentEditingImage = null;
-					}
+				// 	} else {
+				// 		zss_editor.currentEditingImage = null;
+				// 	}
 
-				}
+				// }
 
-				notifyIfSelectionHasChanged(items);
+				// notifyIfSelectionHasChanged(items);
 			}
 
 			function notifyIfSelectionHasChanged(items) {
