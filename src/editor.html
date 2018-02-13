@@ -1464,6 +1464,10 @@
 			}
 
 			zss_editor.insertImageIntoGrid = function(data) {
+				// workaround to fix image cannot be inserted when content is empty
+				if (zss_editor.getContentHTML() == '') {
+					setHTML('zss_editor_content', ' ')
+				}
 				zss_editor.restorerange();
 				var attributes = data['attributes']
 				var closeImageData = data['closeImageData']
@@ -1522,6 +1526,10 @@
 			}
 
 			zss_editor.insertImage = function(data) {
+				// workaround to fix image cannot be inserted when content is empty
+				if (zss_editor.getContentHTML() == '') {
+					setHTML('zss_editor_content', ' ')
+				}
 				zss_editor.restorerange(); 
 				var attributes = data['attributes']
 				var closeImageData = data['closeImageData']
@@ -1991,16 +1999,12 @@
 				overflow:auto;
 			}
 
-			#zss_editor_content {
-				padding-left: 0px;
-				padding-right: 0px;
-			}
-
 			div.zss_editor_title {
 				font-family: 'Helvetica Neue Light', sans-serif;
-				font-size: 23px;
 				line-height: 31px;
 				color: #2d4150;
+				margin-top: 14px;
+				margin-bottom: 8px;
 			}
 
 			#zss_editor_title {

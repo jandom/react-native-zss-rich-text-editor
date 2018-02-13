@@ -343,7 +343,7 @@ export default class RichTextEditor extends Component {
   //--------------- Public API
 
   getGridWidth () {
-    const screenWidth = Dimensions.get('window').width
+    const screenWidth = Dimensions.get('window').width - 10
     const { imagePerRow, imageGapWidth } = this.props
     const gridWidth =
       (screenWidth - imageGapWidth * (imagePerRow + 1)) / imagePerRow
