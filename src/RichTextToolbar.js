@@ -208,8 +208,6 @@ class RichTextToolbar extends Component {
   onVideoAdded = (videoData) => {
     const editor = this.props.getEditor();
     const thumbnailUrl = videoData.get('thumbnail')
-    const width = videoData.get('thumbnailWidth')
-    const height = videoData.get('thumbnailHeight')
     const mediaId = videoData.get('mediaId')
 
     let image = {}
@@ -217,6 +215,7 @@ class RichTextToolbar extends Component {
     image.groupId = this.randomIdentifier()
     image.src = thumbnailUrl
     image.mediaId = mediaId
+    image.width = '100%'
 
     editor.insertImage(image, closeImageData, true)
   }
