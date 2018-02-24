@@ -230,7 +230,6 @@ class RichTextToolbar extends Component {
       compressImageMaxHeight: 500,
       smartAlbums: ['UserLibrary'],
     }).then(images => {
-
       let groupId = this.randomIdentifier()
 
       images.reverse().map(image => {
@@ -245,6 +244,12 @@ class RichTextToolbar extends Component {
           image.height
         )
       })
+    }).catch(error => {
+      // ignore cancel album error
+      if (error.toString().indexOf('cancelled image selection') === -1) {
+        const { navigation } = this.props
+        navigation.navigate('AlbumPermission')
+      }
     })
   }
 
