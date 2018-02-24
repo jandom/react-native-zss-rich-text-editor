@@ -66,6 +66,7 @@ class RichTextToolbar extends Component {
     onVideoBtnPressed: PropTypes.func,
     onCameraBtnPressed: PropTypes.func,
     onHashTagBtnPressed: PropTypes.func,
+    onAlbumPermissionShowed: PropTypes.func,
     selectedButtonStyle: PropTypes.object,
     iconTint: PropTypes.any,
     selectedIconTint: PropTypes.any,
@@ -247,8 +248,10 @@ class RichTextToolbar extends Component {
     }).catch(error => {
       // ignore cancel album error
       if (error.toString().indexOf('cancelled image selection') === -1) {
-        const { navigation } = this.props
-        navigation.navigate('AlbumPermission')
+        const { onAlbumPermissionShowed } = this.props
+        if (onAlbumPermissionShowed) {
+          onAlbumPermissionShowed()
+        }
       }
     })
   }
