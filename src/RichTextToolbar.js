@@ -48,6 +48,7 @@ type Props = {
   hasError: boolean,
   errorMessage: string,
   uploadImage: Function,
+  clearImageData: Function,
   imgLocalId: string,
   mediaId: string,
   hasTags: boolean,
@@ -67,6 +68,7 @@ class RichTextToolbar extends Component {
     onCameraBtnPressed: PropTypes.func,
     onHashTagBtnPressed: PropTypes.func,
     onAlbumPermissionShowed: PropTypes.func,
+    onPhotoSelected: PropTypes.func,
     selectedButtonStyle: PropTypes.object,
     iconTint: PropTypes.any,
     selectedIconTint: PropTypes.any,
@@ -113,7 +115,14 @@ class RichTextToolbar extends Component {
 
     if (imgUrl && mediaId && imgLocalId) {
       const editor = this.props.getEditor();
-      editor.updateImageWithUrl(imgUrl, mediaId, imgLocalId)
+      
+      // added delay to prevent updateImageWithUrl before inserted photo into editor 
+      setTimeout(() => {
+        editor.updateImageWithUrl(imgUrl, mediaId, imgLocalId)
+
+        // clear image data to prevent re-render repeatly
+        this.props.clearImageData()
+      }, 1000)
     }
   }
   
@@ -231,6 +240,7 @@ class RichTextToolbar extends Component {
       compressImageMaxHeight: 500,
       smartAlbums: ['UserLibrary'],
     }).then(images => {
+      this.props.onPhotoSelected && this.props.onPhotoSelected()
       let groupId = this.randomIdentifier()
 
       images.reverse().map(image => {
@@ -463,6 +473,8 @@ const mapDispatchToProps = dispatch => {
   return {
     uploadImage: (images = null) =>
       dispatch(TextEditorRedux.textEditorRequest(images)),
+    clearImageData: () =>
+      dispatch(TextEditorRedux.textEditorUpdatedImage()),
   }
 }
 
