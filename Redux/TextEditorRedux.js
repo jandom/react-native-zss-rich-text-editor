@@ -7,6 +7,7 @@ const { Types, Creators } = createActions({
   textEditorRequest: ['images'],
   textEditorSuccess: ['imgUrl', 'mediaId', 'imgLocalId'],
   textEditorFailure: ['errorMessage'],
+  textEditorUpdatedImage: null
 })
 
 export const TextEditorTypes = Types
@@ -53,10 +54,20 @@ export const failure = (state, errorMessage ) =>
       errorMessage,
     })
 
+export const clearImageData = ( state ) => {
+  return state
+  .merge({
+    imgUrl: null,
+    mediaId: null,
+    imgLocalId: null,
+  })
+}
+
 /* ------------- Hookup Reducers To Types ------------- */
 
 export const reducer = createReducer(INITIAL_STATE, {
   [Types.TEXT_EDITOR_REQUEST]: request,
   [Types.TEXT_EDITOR_SUCCESS]: success,
   [Types.TEXT_EDITOR_FAILURE]: failure,
+  [Types.TEXT_EDITOR_UPDATED_IMAGE]: clearImageData,
 })
