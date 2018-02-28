@@ -13,7 +13,7 @@ export const actions = {
   blurContentEditor: 'BLUR_CONTENT_EDITOR',
   focusTitle: 'FOCUS_TITLE',
   focusContent: 'FOCUS_CONTENT',
-
+  createGridImageGroup: 'CREATE_GRID_IMAGE_GROUP',
   setBold: 'bold',
   setItalic: 'italic',
   setUnderline: 'underline',
@@ -60,7 +60,7 @@ export const actions = {
   init: 'ZSSS_INIT',
   setEditorHeight: 'SET_EDITOR_HEIGHT',
   setFooterHeight: 'SET_FOOTER_HEIGHT',
-  setPlatform: 'SET_PLATFORM'
+  setPlatform: 'SET_PLATFORM',
 };
 
 

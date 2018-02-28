@@ -182,6 +182,9 @@ export const InjectedMessageHandler = `
         case '${actions.setPlatform}':
           zss_editor.setPlatform(action.data);
           break;
+        case '${actions.createGridImageGroup}':
+          zss_editor.createGridImageGroup(action.data);
+          break;  
       }
     };
   }

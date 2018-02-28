@@ -1436,8 +1436,13 @@
 					var imageGroupContainer = $('<div><div class="imageGroupContainer" id="'+imageGroupContainerId+'">'+
 						'<input width='+width+' height='+height+' id="'+addImageButtonId+'" class="gridImageContainer" type="image" src="'+addImageData+'">'+
 						'</div></div>');
-					zss_editor.insertHTML(imageGroupContainer.html());
+					setHTML('zss_editor_content', imageGroupContainer.html())
 				}
+			}
+			zss_editor.createGridImageGroup = function (data) {
+				zss_editor.restorerange(); 
+				zss_editor.createGridImageGroupContainerIfNeeded(data)
+				zss_editor.enabledEditingItems()
 			}
 
 			zss_editor.updateGridView = function(data) {

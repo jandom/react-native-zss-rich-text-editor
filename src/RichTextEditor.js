@@ -505,6 +505,17 @@ export default class RichTextEditor extends Component {
     this._sendAction(actions.insertImageIntoGrid, {attributes, closeImageData});
     this.prepareInsert(); //This must be called BEFORE insertImage. But WebViewBridge uses a stack :/
   }
+
+  createGridImageGroup() {
+    const size = this.getCalibratedSize()
+    const attributes = {
+      width: size.calibratedWidth,
+      height: size.calibratedHeight,
+      groupId: '0'
+    }
+    this._sendAction(actions.createGridImageGroup, {attributes});
+    this.prepareInsert(); //This must be called BEFORE insertImage. But WebViewBridge uses a stack :/
+  }
   
   updateGridView() {
     const size = this.getCalibratedSize()
