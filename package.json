@@ -28,7 +28,7 @@
   "dependencies": {
     "react-native-htmlview": "^0.12.1",
     "react-native-parse-html": "^2.2.6",
-    "react-native-webview-bridge-updated": "git+https://github.com/jandom/react-native-webview-bridge#0c162a5ae8a6387b7136e9f61650d5d68c512fe0"
+    "react-native-webview-bridge-updated": "^1.0.0"
   },
   "deprecated": false,
   "description": "React Native Wrapper for ZSSRichTextEditor",
